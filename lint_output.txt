@@ -1,0 +1,92 @@
+
+> school-web@0.1.0 lint
+> eslint
+
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\app\(public)\about\page.tsx
+   2:23   warning  'Users' is defined but never used                                @typescript-eslint/no-unused-vars
+   2:30   warning  'Award' is defined but never used                                @typescript-eslint/no-unused-vars
+   2:37   warning  'BookOpen' is defined but never used                             @typescript-eslint/no-unused-vars
+  75:247  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  76:223  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\app\(public)\admissions\page.tsx
+  44:85  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\AdminHeader.tsx
+  6:38  warning  'ChevronDown' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\Sidebar.tsx
+  126:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\Sidebar.tsx:126:18
+  124 |                     }`}
+  125 |             >
+> 126 |                 <SidebarContent />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  127 |             </aside>
+  128 |
+  129 |             {/* Mobile Overlay */}
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\Sidebar.tsx:47:28
+   45 |     };
+   46 |
+>  47 |     const SidebarContent = () => (
+      |                            ^^^^^^^
+>  48 |         <div className="flex flex-col h-full">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  49 |             {/* Logo */}
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 116 |         </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 117 |     );
+      | ^^^^^^ The component is created during render here
+  118 |
+  119 |     return (
+  120 |         <>                                                    react-hooks/static-components
+  154:22  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\Sidebar.tsx:154:22
+  152 |                 </div>
+  153 |                 <div className="flex-1 overflow-y-auto">
+> 154 |                     <SidebarContent />
+      |                      ^^^^^^^^^^^^^^ This component is created during render
+  155 |                 </div>
+  156 |             </aside>
+  157 |         </>
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\admin\Sidebar.tsx:47:28
+   45 |     };
+   46 |
+>  47 |     const SidebarContent = () => (
+      |                            ^^^^^^^
+>  48 |         <div className="flex flex-col h-full">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  49 |             {/* Logo */}
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 116 |         </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 117 |     );
+      | ^^^^^^ The component is created during render here
+  118 |
+  119 |     return (
+  120 |         <>  react-hooks/static-components
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\home\ContactPreview.tsx
+   4:10   warning  'motion' is defined but never used                               @typescript-eslint/no-unused-vars
+  25:72   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  28:48   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  28:131  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\src\components\layout\Footer.tsx
+  79:29  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  79:72  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+✖ 15 problems (10 errors, 5 warnings)
+
