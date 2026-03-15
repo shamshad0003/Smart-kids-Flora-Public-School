@@ -63,16 +63,20 @@ export default function ContactPage() {
                             <form className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-700">Full Name *</label>
+                                        <label htmlFor="full-name" className="text-sm font-bold text-slate-700">Full Name *</label>
                                         <input
+                                            id="full-name"
+                                            name="full-name"
                                             type="text"
                                             placeholder="e.g., John Doe"
                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-700">Email Address *</label>
+                                        <label htmlFor="contact-email" className="text-sm font-bold text-slate-700">Email Address *</label>
                                         <input
+                                            id="contact-email"
+                                            name="contact-email"
                                             type="email"
                                             placeholder="john@example.com"
                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition"
@@ -81,8 +85,10 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700">Phone Number</label>
+                                    <label htmlFor="contact-phone" className="text-sm font-bold text-slate-700">Phone Number</label>
                                     <input
+                                        id="contact-phone"
+                                        name="contact-phone"
                                         type="tel"
                                         placeholder="+1 (234) 567-890"
                                         className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition"
@@ -90,8 +96,12 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700">Subject *</label>
-                                    <select className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition">
+                                    <label htmlFor="contact-subject" className="text-sm font-bold text-slate-700">Subject *</label>
+                                    <select 
+                                        id="contact-subject"
+                                        name="contact-subject"
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition"
+                                    >
                                         <option value="">Select a subject...</option>
                                         <option>Admissions Inquiry</option>
                                         <option>Academic Information</option>
@@ -103,8 +113,10 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700">Message *</label>
+                                    <label htmlFor="contact-message" className="text-sm font-bold text-slate-700">Message *</label>
                                     <textarea
+                                        id="contact-message"
+                                        name="contact-message"
                                         rows={5}
                                         placeholder="Write your message here..."
                                         className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition resize-none"
@@ -112,7 +124,7 @@ export default function ContactPage() {
                                 </div>
 
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="w-full py-4 bg-primary text-white font-extrabold rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/10"
                                 >
                                     <span>Send Message</span>

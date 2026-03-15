@@ -1,6 +1,19 @@
-import ComingSoon from "@/components/admin/ComingSoon";
+import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import DownloadManager from '@/components/admin/DownloadManager';
 
-export default function Page() {
-  return <ComingSoon title="Downloads" description="Upload and manage downloadable resources for parents and students. Coming in Phase 3." />;
+export const metadata: Metadata = {
+  title: 'Manage Downloads | Admin Portal',
+};
+
+export default async function DownloadsPage() {
+  const downloads = await prisma.downloadFile.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <DownloadManager initialData={downloads} />
+    </div>
+  );
 }
-

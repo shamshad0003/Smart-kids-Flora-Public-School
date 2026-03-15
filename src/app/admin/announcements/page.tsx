@@ -1,6 +1,19 @@
-import ComingSoon from "@/components/admin/ComingSoon";
+import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import AnnouncementManager from '@/components/admin/AnnouncementManager';
 
-export default function Page() {
-  return <ComingSoon title="Announcements" description="Create, edit, and manage school announcements that appear on the public website. Coming in Phase 3." />;
+export const metadata: Metadata = {
+  title: 'Manage Announcements | Admin Portal',
+};
+
+export default async function AnnouncementsPage() {
+  const announcements = await prisma.announcement.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      <AnnouncementManager initialData={announcements} />
+    </div>
+  );
 }
-

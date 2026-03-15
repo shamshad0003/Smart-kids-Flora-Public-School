@@ -10,21 +10,40 @@
    * C:\Users\md232\Desktop\Projects\Smart kids Flora Public School\package-lock.json
 
 Γû▓ Next.js 16.1.6 (Turbopack)
-- Environments: .env.local
+- Environments: .env.local, .env
 
   Creating an optimized production build ...
-Γ£ô Compiled successfully in 4.6s
-  Running TypeScript ...
-Failed to compile.
 
-.next/dev/types/validator.ts:42:39
-Type error: Cannot find module '../../../src/app/about/page.js' or its corresponding type declarations.
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./Desktop/Projects/Smart kids Flora Public School/src/lib/prisma.ts:1:1
+Module not found: Can't resolve '../../prisma/generated/client'
+> 1 | import { PrismaClient } from '../../prisma/generated/client';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 |
+  3 | const globalForPrisma = global as unknown as { prisma: PrismaClient };
+  4 |
 
-  40 | {
-  41 |   type __IsExpected<Specific extends AppPageConfig<"/about">> = Specific
-> 42 |   const handler = {} as typeof import("../../../src/app/about/page.js")
-     |                                       ^
-  43 |   type __Check = __IsExpected<typeof handler>
-  44 |   // @ts-ignore
-  45 |   type __Unused = __Check
-Next.js build worker exited with code: 1 and signal: null
+
+
+Import traces:
+  App Route:
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/prisma.ts
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/auth.ts
+    ./Desktop/Projects/Smart kids Flora Public School/src/app/api/auth/[...nextauth]/route.ts
+
+  Edge Middleware:
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/prisma.ts
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/auth.ts
+    ./Desktop/Projects/Smart kids Flora Public School/middleware.ts
+
+  Server Component:
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/prisma.ts
+    ./Desktop/Projects/Smart kids Flora Public School/src/lib/auth.ts
+    ./Desktop/Projects/Smart kids Flora Public School/src/app/admin/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./Desktop/Projects/Smart kids Flora Public School/src/lib/prisma.ts:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

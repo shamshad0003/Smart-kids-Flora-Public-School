@@ -1,6 +1,19 @@
-import ComingSoon from "@/components/admin/ComingSoon";
+import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import GalleryManager from '@/components/admin/GalleryManager';
 
-export default function Page() {
-  return <ComingSoon title="Gallery Manager" description="Upload, organize, and manage photos for the school gallery. Coming in Phase 3." />;
+export const metadata: Metadata = {
+  title: 'Manage Gallery | Admin Portal',
+};
+
+export default async function GalleryPage() {
+  const images = await prisma.galleryItem.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <GalleryManager initialData={images} />
+    </div>
+  );
 }
-

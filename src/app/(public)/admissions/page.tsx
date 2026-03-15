@@ -1,6 +1,7 @@
 import PageHeader from "@/components/layout/PageHeader";
 import { CheckCircle, FileText, Calendar, CreditCard, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import AdmissionForm from "./AdmissionForm";
 
 const steps = [
     { step: "01", icon: FileText, title: "Submit Application", desc: "Fill out the online admission form with student and parent/guardian details." },
@@ -103,6 +104,13 @@ export default function AdmissionsPage() {
                         </div>
                         <p className="text-xs text-slate-400">* Fee subject to revision. Scholarships available for deserving students. Contact the admissions office for details.</p>
                     </div>
+                </div>
+            </section>
+
+            {/* Application Form */}
+            <section className="py-24 bg-white" id="apply-online">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <AdmissionForm />
                 </div>
             </section>
         </div>

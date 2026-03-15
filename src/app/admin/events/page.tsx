@@ -1,6 +1,19 @@
-import ComingSoon from "@/components/admin/ComingSoon";
+import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import EventManager from '@/components/admin/EventManager';
 
-export default function Page() {
-  return <ComingSoon title="Events Management" description="Add and manage school events shown on the public Events page. Coming in Phase 3." />;
+export const metadata: Metadata = {
+  title: 'Manage Events | Admin Portal',
+};
+
+export default async function EventsPage() {
+  const events = await prisma.event.findMany({
+    orderBy: { eventDate: 'asc' },
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <EventManager initialData={events} />
+    </div>
+  );
 }
-

@@ -1,6 +1,19 @@
-import ComingSoon from "@/components/admin/ComingSoon";
+import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import AdmissionManager from '@/components/admin/AdmissionManager';
 
-export default function Page() {
-  return <ComingSoon title="Admissions Management" description="Manage student admission applications, review enrollments, and track status. Full CRUD functionality coming in Phase 3." />;
+export const metadata: Metadata = {
+  title: 'Manage Admissions | Admin Portal',
+};
+
+export default async function AdmissionsPage() {
+  const admissions = await prisma.admission.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <AdmissionManager initialData={admissions} />
+    </div>
+  );
 }
-
