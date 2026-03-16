@@ -32,3 +32,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary);
   font-weight: 700;
 }
+
+@layer utilities {
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-white text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors;
+  }
+}
+

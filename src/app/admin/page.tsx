@@ -1,5 +1,6 @@
 import React from "react";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import StatsCard from "@/components/admin/StatsCard";
 import {
     Users,
@@ -10,68 +11,66 @@ import {
     Bell,
     ArrowRight,
     Clock,
+    GraduationCap,
+    BookOpen,
+    Download,
 } from "lucide-react";
 import Link from "next/link";
-
-// Demo summary data — replace with real DB queries in Phase 3
-const stats = [
-    {
-        title: "Total Admissions",
-        value: 312,
-        icon: Users,
-        iconColor: "text-blue-600",
-        iconBg: "bg-blue-100",
-        trend: 12,
-        trendLabel: "vs. last month",
-    },
-    {
-        title: "Announcements",
-        value: 24,
-        icon: Megaphone,
-        iconColor: "text-amber-600",
-        iconBg: "bg-amber-100",
-        trend: 5,
-        trendLabel: "vs. last month",
-    },
-    {
-        title: "Upcoming Events",
-        value: 8,
-        icon: CalendarDays,
-        iconColor: "text-green-600",
-        iconBg: "bg-green-100",
-        trend: -2,
-        trendLabel: "vs. last month",
-    },
-    {
-        title: "Gallery Items",
-        value: 156,
-        icon: Image,
-        iconColor: "text-purple-600",
-        iconBg: "bg-purple-100",
-        trend: 0,
-        trendLabel: "No change",
-    },
-];
-
-// Demo recent activity
-const recentActivity = [
-    { type: "Admission", name: "Ali Hassan enrolled in Class 5", time: "2 hours ago", color: "bg-blue-500" },
-    { type: "Announcement", name: "Annual Sports Meet date announced", time: "5 hours ago", color: "bg-amber-500" },
-    { type: "Event", name: "Science Fair added to calendar", time: "Yesterday", color: "bg-green-500" },
-    { type: "Gallery", name: "12 photos added to Sports Day album", time: "Yesterday", color: "bg-purple-500" },
-    { type: "Admission", name: "Zara Khan enrolled in Class 3", time: "2 days ago", color: "bg-blue-500" },
-];
-
-const quickActions = [
-    { label: "New Admission", href: "/admin/admissions", icon: Users, color: "bg-blue-500 hover:bg-blue-600" },
-    { label: "Add Announcement", href: "/admin/announcements", icon: Megaphone, color: "bg-amber-500 hover:bg-amber-600" },
-    { label: "Add Event", href: "/admin/events", icon: CalendarDays, color: "bg-green-500 hover:bg-green-600" },
-    { label: "Upload Gallery", href: "/admin/gallery", icon: Image, color: "bg-purple-500 hover:bg-purple-600" },
-];
 
 export default async function AdminDashboardPage() {
     const session = await auth();
     const name = session?.user?.name ?? "Admin";
+
+    // --- Real DB counts ---
+    const [
+        totalAdmissions,
+        pendingAdmissions,
+        approvedAdmissions,
+        totalAnnouncements,
+        totalEvents,
+        totalGallery,
+        totalDownloads,
+        totalTeachers,
+        totalStudents,
+        totalParents,
+        recentAdmissions,
+    ] = await Promise.all([
+        prisma.admission.count(),
+        prisma.admission.count({ where: { status: "PENDING" } }),
+        prisma.admission.count({ where: { status: "APPROVED" } }),
+        prisma.announcement.count(),
+        prisma.event.count({ where: { eventDate: { gte: new Date() } } }),
+        prisma.galleryItem.count(),
+        prisma.downloadFile.count(),
+        prisma.teacher.count(),
+        prisma.student.count(),
+        prisma.parent.count(),
+        prisma.admission.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+    ]);
+
+    const stats = [
+        { title: "Total Admissions", value: totalAdmissions, icon: Users, iconColor: "text-blue-600", iconBg: "bg-blue-100", badge: pendingAdmissions > 0 ? `${pendingAdmissions} pending` : undefined },
+        { title: "Announcements", value: totalAnnouncements, icon: Megaphone, iconColor: "text-amber-600", iconBg: "bg-amber-100" },
+        { title: "Upcoming Events", value: totalEvents, icon: CalendarDays, iconColor: "text-green-600", iconBg: "bg-green-100" },
+        { title: "Gallery Items", value: totalGallery, icon: Image, iconColor: "text-purple-600", iconBg: "bg-purple-100" },
+        { title: "Downloads", value: totalDownloads, icon: Download, iconColor: "text-slate-600", iconBg: "bg-slate-100" },
+        { title: "Teachers", value: totalTeachers, icon: BookOpen, iconColor: "text-emerald-600", iconBg: "bg-emerald-100" },
+        { title: "Students", value: totalStudents, icon: GraduationCap, iconColor: "text-indigo-600", iconBg: "bg-indigo-100" },
+        { title: "Parents", value: totalParents, icon: Users, iconColor: "text-pink-600", iconBg: "bg-pink-100" },
+    ];
+
+    const quickActions = [
+        { label: "New Admission", href: "/admin/admissions", icon: Users, color: "bg-blue-500 hover:bg-blue-600" },
+        { label: "Add Announcement", href: "/admin/announcements", icon: Megaphone, color: "bg-amber-500 hover:bg-amber-600" },
+        { label: "Add Event", href: "/admin/events", icon: CalendarDays, color: "bg-green-500 hover:bg-green-600" },
+        { label: "Upload Gallery", href: "/admin/gallery", icon: Image, color: "bg-purple-500 hover:bg-purple-600" },
+    ];
+
+    const statusColor: Record<string, string> = {
+        PENDING: "bg-amber-400",
+        APPROVED: "bg-green-500",
+        REJECTED: "bg-red-500",
+    };
 
     return (
         <div className="space-y-8">
@@ -86,7 +85,10 @@ export default async function AdminDashboardPage() {
                         <p className="text-blue-100/70 text-sm font-medium">Welcome back,</p>
                         <h1 className="text-3xl font-extrabold text-white">{name} 👋</h1>
                         <p className="text-blue-100/70 text-sm">
-                            Here&apos;s what&apos;s happening at Smart Kids Flora Public School today.
+                            {pendingAdmissions > 0 && (
+                                <span className="text-amber-300 font-bold">{pendingAdmissions} pending admission{pendingAdmissions > 1 ? "s" : ""} need review · </span>
+                            )}
+                            {totalStudents} students · {totalTeachers} teachers
                         </p>
                     </div>
                     <div className="flex items-center space-x-2 bg-white/10 rounded-xl px-4 py-3 text-sm text-blue-100/80 border border-white/10 self-start md:self-center">
@@ -103,10 +105,10 @@ export default async function AdminDashboardPage() {
                 </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                 {stats.map((s) => (
-                    <StatsCard key={s.title} {...s} />
+                    <StatsCard key={s.title} {...s} trend={undefined} trendLabel={undefined} />
                 ))}
             </div>
 
@@ -132,30 +134,53 @@ export default async function AdminDashboardPage() {
                 </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* Recent Admissions */}
             <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
                     <div className="flex items-center space-x-2">
                         <Bell className="h-5 w-5 text-primary" />
-                        <h3 className="text-base font-extrabold text-slate-900">Recent Activity</h3>
+                        <h3 className="text-base font-extrabold text-slate-900">Recent Admissions</h3>
                     </div>
                     <Link href="/admin/admissions" className="text-sm text-primary font-bold flex items-center hover:underline">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
                 </div>
-                <div className="divide-y divide-slate-50">
-                    {recentActivity.map((item, i) => (
-                        <div key={i} className="flex items-center space-x-4 px-6 py-4 hover:bg-slate-50 transition-colors">
-                            <div className={`w-2.5 h-2.5 rounded-full ${item.color} shrink-0`}></div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-800 truncate">{item.name}</p>
-                                <p className="text-xs text-slate-400">{item.type}</p>
+                {recentAdmissions.length === 0 ? (
+                    <div className="px-6 py-12 text-center text-slate-400">No admissions yet.</div>
+                ) : (
+                    <div className="divide-y divide-slate-50">
+                        {recentAdmissions.map((a) => (
+                            <div key={a.id} className="flex items-center space-x-4 px-6 py-4 hover:bg-slate-50 transition-colors">
+                                <div className={`w-2.5 h-2.5 rounded-full ${statusColor[a.status] ?? "bg-slate-400"} shrink-0`}></div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-slate-800 truncate">{a.studentName}</p>
+                                    <p className="text-xs text-slate-400">Grade {a.grade} · {a.parentName}</p>
+                                </div>
+                                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                                    a.status === "APPROVED" ? "bg-green-50 text-green-700" :
+                                    a.status === "REJECTED" ? "bg-red-50 text-red-700" :
+                                    "bg-amber-50 text-amber-700"
+                                }`}>{a.status}</span>
+                                <span className="text-xs text-slate-400 shrink-0">{new Date(a.createdAt).toLocaleDateString()}</span>
                             </div>
-                            <span className="text-xs text-slate-400 shrink-0">{item.time}</span>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* People Summary */}
+            <div className="grid grid-cols-3 gap-4">
+                {[
+                    { label: "Approved Admissions", value: approvedAdmissions, href: "/admin/admissions?status=APPROVED", color: "text-green-600" },
+                    { label: "Pending Review", value: pendingAdmissions, href: "/admin/admissions?status=PENDING", color: "text-amber-600" },
+                    { label: "Active Students", value: totalStudents, href: "/admin/students", color: "text-indigo-600" },
+                ].map(s => (
+                    <Link key={s.label} href={s.href} className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md transition-shadow text-center">
+                        <p className={`text-3xl font-extrabold ${s.color}`}>{s.value}</p>
+                        <p className="text-slate-500 text-sm mt-1">{s.label}</p>
+                    </Link>
+                ))}
             </div>
         </div>
     );

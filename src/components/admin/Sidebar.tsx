@@ -16,17 +16,45 @@ import {
     GraduationCap,
     ChevronLeft,
     Menu,
+    BookOpen,
+    Bell,
+    UserCheck,
 } from "lucide-react";
 
-const navItems = [
-    { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Admissions", href: "/admin/admissions", icon: Users },
-    { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
-    { name: "Events", href: "/admin/events", icon: CalendarDays },
-    { name: "Gallery", href: "/admin/gallery", icon: Image },
-    { name: "Downloads", href: "/admin/downloads", icon: Download },
-    { name: "Settings", href: "/admin/settings", icon: Settings },
+const navGroups = [
+    {
+        label: "Main",
+        items: [
+            { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+        ],
+    },
+    {
+        label: "Content",
+        items: [
+            { name: "Admissions", href: "/admin/admissions", icon: Users },
+            { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
+            { name: "Events", href: "/admin/events", icon: CalendarDays },
+            { name: "Gallery", href: "/admin/gallery", icon: Image },
+            { name: "Downloads", href: "/admin/downloads", icon: Download },
+            { name: "Notifications", href: "/admin/notifications", icon: Bell },
+        ],
+    },
+    {
+        label: "People",
+        items: [
+            { name: "Teachers", href: "/admin/teachers", icon: BookOpen },
+            { name: "Students", href: "/admin/students", icon: GraduationCap },
+            { name: "Parents", href: "/admin/parents", icon: UserCheck },
+        ],
+    },
+    {
+        label: "System",
+        items: [
+            { name: "Settings", href: "/admin/settings", icon: Settings },
+        ],
+    },
 ];
+
 
 interface SidebarProps {
     isMobileOpen: boolean;
@@ -74,32 +102,37 @@ export default function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
 
             {/* Nav Items */}
             <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-                {!collapsed && (
-                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest px-3 py-2">
-                        Main Menu
-                    </p>
-                )}
-                {navItems.map((item) => (
-                    <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={onMobileClose}
-                        className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all group ${isActive(item.href)
-                                ? "bg-white/15 text-white shadow-inner"
-                                : "text-white/60 hover:bg-white/10 hover:text-white"
-                            } ${collapsed ? "justify-center" : ""}`}
-                        title={collapsed ? item.name : undefined}
-                    >
-                        <item.icon className={`h-5 w-5 shrink-0 ${isActive(item.href) ? "text-secondary" : ""}`} />
+                {navGroups.map((group) => (
+                    <div key={group.label}>
                         {!collapsed && (
-                            <span className="text-sm font-semibold">{item.name}</span>
+                            <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest px-3 py-2 mt-2 first:mt-0">
+                                {group.label}
+                            </p>
                         )}
-                        {!collapsed && isActive(item.href) && (
-                            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                        )}
-                    </Link>
+                        {group.items.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={onMobileClose}
+                                className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all group ${isActive(item.href)
+                                        ? "bg-white/15 text-white shadow-inner"
+                                        : "text-white/60 hover:bg-white/10 hover:text-white"
+                                    } ${collapsed ? "justify-center" : ""}`}
+                                title={collapsed ? item.name : undefined}
+                            >
+                                <item.icon className={`h-5 w-5 shrink-0 ${isActive(item.href) ? "text-secondary" : ""}`} />
+                                {!collapsed && (
+                                    <span className="text-sm font-semibold">{item.name}</span>
+                                )}
+                                {!collapsed && isActive(item.href) && (
+                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                )}
+                            </Link>
+                        ))}
+                    </div>
                 ))}
             </nav>
+
 
             {/* Logout */}
             <div className="p-3 border-t border-white/10">

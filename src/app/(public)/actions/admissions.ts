@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { sendAdmissionAlert } from "@/lib/mail";
 
 export type AdmissionState = {
     errors?: {
@@ -50,6 +51,11 @@ export async function submitAdmission(prevState: AdmissionState, formData: FormD
         });
 
         revalidatePath("/admin/admissions");
+
+        // Non-blocking email alert — never throws to user
+        sendAdmissionAlert({ studentName, parentName, email, phone, grade, message }).catch((err) => {
+            console.error("[MAIL] Failed to send admission alert:", err);
+        });
 
         return {
             success: true,
