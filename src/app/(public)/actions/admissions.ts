@@ -3,49 +3,51 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { sendAdmissionAlert } from "@/lib/mail";
+import { z } from "zod";
+
+const AdmissionSchema = z.object({
+    studentName: z.string().min(3, "Student name must be at least 3 characters"),
+    parentName: z.string().min(3, "Parent name must be at least 3 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().min(10, "Phone number must be at least 10 characters"),
+    grade: z.string().min(1, "Please select a grade"),
+    message: z.string().optional(),
+});
 
 export type AdmissionState = {
-    errors?: {
-        studentName?: string[];
-        parentName?: string[];
-        email?: string[];
-        phone?: string[];
-        grade?: string[];
-        message?: string[];
-    };
+    errors?: Record<string, string[]>;
     message?: string;
     success?: boolean;
 };
 
 export async function submitAdmission(prevState: AdmissionState, formData: FormData): Promise<AdmissionState> {
-    const studentName = formData.get("studentName") as string;
-    const parentName = formData.get("parentName") as string;
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
-    const grade = formData.get("grade") as string;
-    const message = formData.get("message") as string;
-
-    // Basic validation
-    const errors: AdmissionState["errors"] = {};
-    if (!studentName || studentName.length < 3) errors.studentName = ["Student name is required and must be at least 3 characters."];
-    if (!parentName || parentName.length < 3) errors.parentName = ["Parent name is required and must be at least 3 characters."];
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) errors.email = ["A valid email is required."];
-    if (!phone || phone.length < 10) errors.phone = ["A valid phone number is required."];
-    if (!grade) errors.grade = ["Please select a grade."];
-
-    if (Object.keys(errors).length > 0) {
-        return { errors, message: "Please correct the errors in the form." };
-    }
-
     try {
+        const validatedFields = AdmissionSchema.safeParse({
+            studentName: formData.get("studentName"),
+            parentName: formData.get("parentName"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            grade: formData.get("grade"),
+            message: formData.get("message"),
+        });
+
+        if (!validatedFields.success) {
+            return { 
+                errors: validatedFields.error.flatten().fieldErrors as Record<string, string[]>, 
+                message: "Please correct the errors in the form." 
+            };
+        }
+
+        const data = validatedFields.data;
+
         await prisma.admission.create({
             data: {
-                studentName,
-                parentName,
-                email,
-                phone,
-                grade,
-                message: message || null,
+                studentName: data.studentName,
+                parentName: data.parentName,
+                email: data.email,
+                phone: data.phone,
+                grade: data.grade,
+                message: data.message || null,
                 status: "PENDING",
             },
         });
@@ -53,7 +55,7 @@ export async function submitAdmission(prevState: AdmissionState, formData: FormD
         revalidatePath("/admin/admissions");
 
         // Non-blocking email alert — never throws to user
-        sendAdmissionAlert({ studentName, parentName, email, phone, grade, message }).catch((err) => {
+        sendAdmissionAlert(data).catch((err) => {
             console.error("[MAIL] Failed to send admission alert:", err);
         });
 

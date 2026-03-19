@@ -22,7 +22,7 @@ export default auth((req) => {
             STUDENT: "/student",
             PARENT: "/parent",
         };
-        const redirect = dashboardMap[role ?? ""] ?? "/admin";
+        const redirect = dashboardMap[role ?? ""] ?? "/login";
         return NextResponse.redirect(new URL(redirect, nextUrl));
     }
 

@@ -16,6 +16,7 @@ import {
     Download,
 } from "lucide-react";
 import Link from "next/link";
+import SafeDate from "@/components/ui/SafeDate";
 
 export default async function AdminDashboardPage() {
     const session = await auth();
@@ -94,12 +95,7 @@ export default async function AdminDashboardPage() {
                     <div className="flex items-center space-x-2 bg-white/10 rounded-xl px-4 py-3 text-sm text-blue-100/80 border border-white/10 self-start md:self-center">
                         <Clock className="h-4 w-4" />
                         <span>
-                            {new Date().toLocaleDateString("en-US", {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                            })}
+                            <SafeDate date={new Date()} />
                         </span>
                     </div>
                 </div>
@@ -162,7 +158,7 @@ export default async function AdminDashboardPage() {
                                     a.status === "REJECTED" ? "bg-red-50 text-red-700" :
                                     "bg-amber-50 text-amber-700"
                                 }`}>{a.status}</span>
-                                <span className="text-xs text-slate-400 shrink-0">{new Date(a.createdAt).toLocaleDateString()}</span>
+                                <span className="text-xs text-slate-400 shrink-0"><SafeDate date={a.createdAt} /></span>
                             </div>
                         ))}
                     </div>

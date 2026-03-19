@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Kids Flora Public School - Web Portal
 
-## Getting Started
+A comprehensive, modern school management and public website built with **Next.js 15+**, **TypeScript**, **Tailwind CSS**, and **Prisma**.
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 🌐 Public Website
+- **Modern UI/UX**: Professional design with smooth animations using Framer Motion.
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop.
+- **Admissions Portal**: Easy-to-use admission form with email notifications.
+- **Dynamic Content**: Auto-updating announcements and gallery from the admin panel.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🔑 Authentication & Security
+- **Role-Based Access Control (RBAC)**: Distinct permissions for Admin, Teacher, Student, and Parent.
+- **Secure Authentication**: Powerded by NextAuth/Auth.js with JWT and secure password hashing.
+- **Hardened Server Actions**: All internal operations protected by server-side role validation.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🛡️ Admin Dashboard
+- **User Management**: Add, Edit, and Delete Teachers, Students, and Parents.
+- **Admissions Management**: Review, approve, or reject student applications.
+- **Notifications**: Send targeted notifications to specific roles or all users.
+- **School Settings**: Update school contact info and branding.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🍎 Teacher Portal
+- **Academics**: Manage courses, assignments, and grades.
+- **Attendance**: Track student attendance with daily logs.
+- **Communication**: Receive administrative notifications.
 
-## Learn More
+### 👨‍👩‍👧‍👦 Student & Parent Portal
+- **Academic Tracking**: View grades, assignments, and attendance logs.
+- **Resource Access**: Download learning materials and view schedules.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
+- **Framework**: [Next.js (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Database**: [SQLite](https://sqlite.org/) (Development) / [PostgreSQL](https://www.postgresql.org/) (Production)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Auth**: [Auth.js (NextAuth)](https://authjs.dev/)
+- **Email**: [Nodemailer](https://nodemailer.com/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-## Deploy on Vercel
+### Installation
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   - Copy `.env.example` to `.env`
+   - Update `AUTH_SECRET`, `DATABASE_URL`, and SMTP settings.
+4. Run Prisma migrations:
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 Documentation
+- [Deployment Guide](./deployment_guide.md) - How to move from SQLite to PostgreSQL and deploy to Vercel.
+- [Phase 6 Review](./phase6_review.md) - Detailed breakdown of recent feature additions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 License
+Proprietary. All rights reserved.

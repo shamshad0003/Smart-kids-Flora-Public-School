@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BookOpen, Clock, CalendarDays } from "lucide-react";
+import SafeDate from "@/components/ui/SafeDate";
 
 export default async function StudentAssignmentsPage() {
     const session = await auth();
@@ -50,7 +51,7 @@ export default async function StudentAssignmentsPage() {
                                     </div>
                                 </div>
                                 <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full shrink-0 ml-4">
-                                    Due {new Date(a.dueDate).toLocaleDateString()}
+                                    Due <SafeDate date={a.dueDate} />
                                 </span>
                             </div>
                         ))}
@@ -73,7 +74,7 @@ export default async function StudentAssignmentsPage() {
                                     <p className="text-sm text-slate-400">{a.courseName}</p>
                                 </div>
                                 <span className="text-xs font-medium px-3 py-1 bg-slate-100 text-slate-500 rounded-full shrink-0">
-                                    {new Date(a.dueDate).toLocaleDateString()}
+                                    <SafeDate date={a.dueDate} />
                                 </span>
                             </div>
                         ))}

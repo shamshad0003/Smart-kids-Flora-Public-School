@@ -5,10 +5,10 @@ import { createAssignment } from "../actions";
 import { Plus, BookOpen, X } from "lucide-react";
 import DeleteAssignmentButton from "./DeleteAssignmentButton";
 
-type Course = { id: string; name: string; subject: string };
-type Assignment = { id: string; title: string; description: string; dueDate: Date; courseId: string; course: Course };
+type Course = { id: string; name: string };
+type Assignment = { id: string; title: string; description: string | null; dueDate: Date; courseId: string; course: Course };
 
-export default function TeacherAssignmentsClient({ assignments, courses }: { assignments: Assignment[]; courses: Course[] }) {
+export default function TeacherAssignmentsClient({ assignments, courses }: { assignments: any[]; courses: Course[] }) {
     const [showForm, setShowForm] = useState(false);
     const [state, formAction, isPending] = useActionState(createAssignment, { success: false, message: "" });
     const formRef = useRef<HTMLFormElement>(null);

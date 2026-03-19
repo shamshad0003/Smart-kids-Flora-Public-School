@@ -14,8 +14,41 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Kids Flora Public School",
-  description: "A professional educational institution dedicated to excellence in learning and development.",
+  title: {
+    default: "Smart Kids Flora Public School | Excellence in Education",
+    template: "%s | Smart Kids Flora Public School",
+  },
+  description: "A leading educational institution providing world-class learning, holistic development, and a nurturing environment for the leaders of tomorrow.",
+  keywords: ["school", "education", "flora public school", "smart kids", "best school", "learning", "academic excellence"],
+  authors: [{ name: "Smart Kids Flora Public School" }],
+  creator: "Smart Kids Flora Public School",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://florapublic.edu",
+    siteName: "Smart Kids Flora Public School",
+    title: "Smart Kids Flora Public School | Excellence in Education",
+    description: "Empowering students through innovative learning and holistic development.",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Smart Kids Flora Public School",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Smart Kids Flora Public School",
+    description: "Empowering students through innovative learning and holistic development.",
+    images: ["/images/og-image.jpg"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

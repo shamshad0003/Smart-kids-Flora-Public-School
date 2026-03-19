@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Bell } from "lucide-react";
+import SafeDate from "@/components/ui/SafeDate";
 
 export default async function ParentNotificationsPage() {
     const session = await auth();
@@ -34,7 +35,7 @@ export default async function ParentNotificationsPage() {
                             <div className="flex-1">
                                 <p className="font-bold text-slate-900">{n.title}</p>
                                 <p className="text-slate-600 text-sm mt-1">{n.message}</p>
-                                <p className="text-xs text-slate-400 mt-2">{new Date(n.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</p>
+                                <p className="text-xs text-slate-400 mt-2"><SafeDate date={n.createdAt} /></p>
                             </div>
                         </div>
                     ))}

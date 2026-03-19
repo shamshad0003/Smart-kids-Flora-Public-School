@@ -5,8 +5,25 @@ import { motion } from 'framer-motion';
 import { Bell, Calendar, ArrowRight, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Announcement } from '@prisma/client';
+import SafeDate from '../ui/SafeDate';
 
 export default function AnnouncementsClient({ announcements }: { announcements: Announcement[] }) {
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return (
+        <section className="py-24 bg-white relative overflow-hidden">
+             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                 <div className="flex justify-center items-center h-48">
+                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                 </div>
+             </div>
+        </section>
+    );
+
     return (
         <section className="py-24 bg-white relative overflow-hidden">
             {/* Decorative Background Element */}
@@ -60,7 +77,7 @@ export default function AnnouncementsClient({ announcements }: { announcements: 
                                         </span>
                                         <div className="flex items-center text-slate-400 text-xs">
                                             <Calendar className="h-3 w-3 mr-1" />
-                                            {new Date(item.createdAt).toLocaleDateString()}
+                                            <SafeDate date={item.createdAt} />
                                         </div>
                                     </div>
 

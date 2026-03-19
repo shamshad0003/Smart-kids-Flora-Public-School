@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BookOpen, Users, ClipboardList, Award, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import SafeDate from "@/components/ui/SafeDate";
 
 export default async function TeacherDashboard() {
     const session = await auth();
@@ -107,7 +108,7 @@ export default async function TeacherDashboard() {
                                     <p className="text-sm text-slate-500">{a.course.name}</p>
                                 </div>
                                 <span className="text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                                    Due: {new Date(a.dueDate).toLocaleDateString()}
+                                    Due: <SafeDate date={a.dueDate} />
                                 </span>
                             </div>
                         ))}

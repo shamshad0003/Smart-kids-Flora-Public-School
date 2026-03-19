@@ -17,7 +17,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("ADMIN") // ADMIN | TEACHER | STUDENT | PARENT
+  role      String   @default("STUDENT") // ADMIN | TEACHER | STUDENT | PARENT
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -152,7 +152,7 @@ model Course {
 model Assignment {
   id          String   @id @default(cuid())
   title       String
-  description String
+  description String?
   dueDate     DateTime
   courseId    String
   teacherId   String

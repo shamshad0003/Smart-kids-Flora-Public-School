@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { CheckCircle, XCircle, Clock, AlertCircle } from "lucide-react";
+import SafeDate from "@/components/ui/SafeDate";
 
 const statusConfig = {
     PRESENT: { label: "Present", color: "text-green-600", bg: "bg-green-50 border-green-200", icon: CheckCircle },
@@ -73,7 +74,7 @@ export default async function ParentAttendancePage() {
                                     const cfg = statusConfig[att.status as keyof typeof statusConfig] ?? statusConfig.PRESENT;
                                     return (
                                         <tr key={att.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="px-6 py-3 text-slate-700">{new Date(att.date).toLocaleDateString()}</td>
+                                            <td className="px-6 py-3 text-slate-700 text-xs"><SafeDate date={att.date} /></td>
                                             <td className="px-6 py-3 text-slate-600">{att.course.name}</td>
                                             <td className="px-6 py-3">
                                                 <span className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-bold border ${cfg.bg} ${cfg.color}`}>
