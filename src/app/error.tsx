@@ -39,10 +39,17 @@ export default function Error({
                 </p>
 
                 {error.digest && (
-                    <div className="bg-slate-50 p-3 rounded-lg text-xs font-mono text-slate-400 mb-8">
+                    <div className="bg-slate-50 p-3 rounded-lg text-xs font-mono text-slate-400 mb-4">
                         Error ID: {error.digest}
                     </div>
                 )}
+
+                <details className="text-left mb-8">
+                    <summary className="text-xs text-rose-300 cursor-pointer hover:text-rose-400 font-medium">Technical Details</summary>
+                    <div className="mt-2 p-3 bg-rose-50/50 rounded-xl border border-rose-100 text-[10px] font-mono text-rose-800 break-all">
+                        {error.message || "No specific error message provided."}
+                    </div>
+                </details>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button 

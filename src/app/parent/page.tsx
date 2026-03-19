@@ -18,7 +18,10 @@ export default async function ParentDashboard() {
         }
     });
 
-    if (!parent) redirect("/login");
+    if (!parent) {
+        console.error(`Parent profile not found for email: ${session?.user?.email}`);
+        redirect("/login?error=ProfileNotFound");
+    }
 
     const child = parent.children[0]; // primary child
 

@@ -14,7 +14,10 @@ export default async function StudentDashboard() {
         }
     });
 
-    if (!student) redirect("/login");
+    if (!student) {
+        console.error(`Student profile not found for email: ${session?.user?.email}`);
+        redirect("/login?error=ProfileNotFound");
+    }
 
     const totalAttendance = student.attendances.length;
     const presentCount = student.attendances.filter(a => a.status === "PRESENT").length;

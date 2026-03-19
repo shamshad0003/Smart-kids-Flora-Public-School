@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GraduationCap, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
@@ -15,6 +15,13 @@ function LoginContent() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const errorParam = searchParams.get("error");
+        if (errorParam === "ProfileNotFound") {
+            setError("Authenticated successfully, but no associated profile was found (Teacher/Student/Parent). Please contact school administration.");
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,7 +75,7 @@ function LoginContent() {
                                 <GraduationCap className="h-9 w-9" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-extrabold text-white">Admin Portal</h1>
+                                <h1 className="text-2xl font-extrabold text-white">Dashboard Portal</h1>
                                 <p className="text-blue-100/70 text-sm mt-1">Smart Kids Flora Public School</p>
                             </div>
                         </div>
@@ -81,20 +88,10 @@ function LoginContent() {
                             <p className="text-slate-500 text-sm mt-1">Sign in to access your dashboard</p>
                         </div>
 
-                        {/* Demo Credentials Banner */}
-                        <div className="flex items-start space-x-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                            <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                            <div className="text-sm">
-                                <p className="font-bold text-amber-800">Demo Credentials</p>
-                                <p className="text-amber-700">Email: <span className="font-mono">admin@florapublic.edu</span></p>
-                                <p className="text-amber-700">Password: <span className="font-mono">Admin@123</span></p>
-                            </div>
-                        </div>
-
                         {/* Error */}
                         {error && (
-                            <div className="flex items-center space-x-3 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
-                                <AlertCircle className="h-4 w-4 shrink-0" />
+                            <div className="flex items-start space-x-3 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
+                                <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                                 <span>{error}</span>
                             </div>
                         )}
@@ -109,7 +106,7 @@ function LoginContent() {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="admin@florapublic.edu"
+                                        placeholder="your@email.com"
                                         autoComplete="email"
                                         className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition text-sm"
                                     />
@@ -159,7 +156,7 @@ function LoginContent() {
                 </div>
 
                 <p className="text-center text-white/40 text-xs mt-6">
-                    &copy; {new Date().getFullYear()} Smart Kids Flora Public School — Admin Portal
+                    &copy; {new Date().getFullYear()} Smart Kids Flora Public School — Portal
                 </p>
             </div>
         </div>

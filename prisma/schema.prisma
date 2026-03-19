@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,20 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─── Existing Admin Models ─────────────────────────────────────────────────────
-
 model User {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
   password  String
-  role      String   @default("STUDENT") // ADMIN | TEACHER | STUDENT | PARENT
+  role      String   @default("STUDENT")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  teacher Teacher?
-  student Student?
-  parent  Parent?
+  parent    Parent?
+  student   Student?
+  teacher   Teacher?
 }
 
 model Admission {
@@ -34,18 +28,18 @@ model Admission {
   phone       String
   grade       String
   message     String?
-  notes       String?  // Admin internal notes
-  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  notes       String?
 }
 
 model SchoolSettings {
-  id        String   @id @default(cuid())
-  schoolName String  @default("Smart Kids Flora Public School")
-  email      String  @default("")
-  phone      String  @default("")
-  address    String  @default("")
+  id         String   @id @default(cuid())
+  schoolName String   @default("Smart Kids Flora Public School")
+  email      String   @default("")
+  phone      String   @default("")
+  address    String   @default("")
   updatedAt  DateTime @updatedAt
 }
 
@@ -87,65 +81,59 @@ model DownloadFile {
   updatedAt DateTime @updatedAt
 }
 
-// ─── Phase 5: Academic Models ──────────────────────────────────────────────────
-
 model Teacher {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  fullName  String
-  email     String   @unique
-  phone     String?
-  subject   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courses     Course[]
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  fullName    String
+  email       String       @unique
+  phone       String?
+  subject     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   assignments Assignment[]
+  courses     Course[]
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Student {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  fullName   String
-  email      String   @unique
-  phone      String?
-  gradeLevel String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent      Parent?      @relation(fields: [parentId], references: [id])
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  fullName    String
+  email       String       @unique
+  phone       String?
+  gradeLevel  String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   parentId    String?
   attendances Attendance[]
   grades      Grade[]
+  parent      Parent?      @relation(fields: [parentId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Parent {
-  id        String   @id @default(cuid())
-  userId    String   @unique
+  id        String    @id @default(cuid())
+  userId    String    @unique
   fullName  String
-  email     String   @unique
+  email     String    @unique
   phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  children Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  children  Student[]
 }
 
 model Course {
-  id         String   @id @default(cuid())
-  name       String
-  subject    String
-  gradeLevel String
-  teacherId  String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  teacher     Teacher      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  id          String       @id @default(cuid())
+  name        String
+  subject     String
+  gradeLevel  String
+  teacherId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   assignments Assignment[]
   attendances Attendance[]
+  teacher     Teacher      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   grades      Grade[]
 }
 
@@ -158,10 +146,9 @@ model Assignment {
   teacherId   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  teacher  Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  grades   Grade[]
+  teacher     Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  grades      Grade[]
 }
 
 model Attendance {
@@ -169,35 +156,33 @@ model Attendance {
   studentId String
   courseId  String
   date      DateTime
-  status    String   // PRESENT | ABSENT | LATE | EXCUSED
+  status    String
   remarks   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Grade {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   studentId    String
   courseId     String
   assignmentId String?
   marks        Float
-  gradeLabel   String   // A, B, C, D, F
+  gradeLabel   String
   remarks      String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  student    Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course     Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  assignment Assignment? @relation(fields: [assignmentId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  course       Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student      Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
   id         String   @id @default(cuid())
   title      String
   message    String
-  targetRole String   // ADMIN | TEACHER | STUDENT | PARENT | ALL
+  targetRole String
   createdAt  DateTime @default(now())
 }

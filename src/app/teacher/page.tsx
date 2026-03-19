@@ -27,7 +27,11 @@ export default async function TeacherDashboard() {
         }
     });
 
-    if (!teacher) redirect("/login");
+    if (!teacher) {
+        console.error(`Teacher profile not found for email: ${userEmail}`);
+        // Optionally redirect to a setup page or show a specialized error
+        redirect("/login?error=ProfileNotFound");
+    }
 
     const totalCourses = teacher.courses.length;
     const totalAssignments = teacher.assignments.length;
