@@ -2,16 +2,31 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function createGalleryItem(formData: FormData) {
   try {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
-    const imageUrl = formData.get('imageUrl') as string;
+    const imageFile = formData.get('imageFile') as File;
 
-    if (!title || !category || !imageUrl) {
+    if (!title || !category || !imageFile) {
       return { error: 'Missing required fields' };
     }
+
+    // Save file to public/uploads
+    const bytes = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    const extension = path.extname(imageFile.name) || '.jpg';
+    const filename = `${uuidv4()}${extension}`;
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    const filepath = path.join(uploadDir, filename);
+
+    await fs.writeFile(filepath, buffer);
+    const imageUrl = `/uploads/${filename}`;
 
     await prisma.galleryItem.create({
       data: {
@@ -22,6 +37,8 @@ export async function createGalleryItem(formData: FormData) {
     });
 
     revalidatePath('/admin/gallery');
+    revalidatePath('/');
+    revalidatePath('/gallery');
     return { success: true };
   } catch (error) {
     console.error('Failed to add gallery image:', error);
@@ -31,11 +48,14 @@ export async function createGalleryItem(formData: FormData) {
 
 export async function deleteGalleryItem(id: string) {
   try {
+    // Optionally delete the physical file here if needed
     await prisma.galleryItem.delete({
       where: { id },
     });
 
     revalidatePath('/admin/gallery');
+    revalidatePath('/');
+    revalidatePath('/gallery');
     return { success: true };
   } catch (error) {
     console.error('Failed to delete gallery image:', error);
