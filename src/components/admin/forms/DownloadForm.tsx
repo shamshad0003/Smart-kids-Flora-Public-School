@@ -84,6 +84,16 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
         <div className="space-y-2">
           <label className="block text-sm font-bold text-slate-700 mb-1">Choose File (PDF/DOC/ZIP)</label>
           <div className="relative border-2 border-dashed border-slate-200 rounded-3xl p-4 transition-all hover:border-indigo-300 group bg-slate-50 min-h-[160px] flex flex-col items-center justify-center">
+            {/* Input MUST stay in the DOM for submission */}
+            <input 
+              type="file" 
+              id="documentFile"
+              name="documentFile" 
+              required 
+              onChange={handleFileChange}
+              className="hidden" 
+            />
+            
             {fileName ? (
               <div className="flex flex-col items-center justify-center p-4 w-full">
                 <FileIcon className="w-10 h-10 text-indigo-600 mb-2" />
@@ -98,22 +108,17 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
                 </button>
               </div>
             ) : (
-              <label className="cursor-pointer flex flex-col items-center justify-center space-y-2 py-4 w-full">
+              <label 
+                htmlFor="documentFile"
+                className="cursor-pointer flex flex-col items-center justify-center space-y-2 py-4 w-full"
+              >
                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-110 transition-transform">
                   <Upload className="w-6 h-6 text-indigo-600" />
                 </div>
-                <div className="text-center">
+                <div className="text-center px-4">
                   <span className="text-sm font-bold text-indigo-600">Click to upload file</span>
                   <p className="text-xs text-slate-400 mt-1">PDF, DOC, ZIP (Max 10MB)</p>
                 </div>
-                <input 
-                  type="file" 
-                  id="documentFile"
-                  name="documentFile" 
-                  required 
-                  onChange={handleFileChange}
-                  className="hidden" 
-                />
               </label>
             )}
           </div>

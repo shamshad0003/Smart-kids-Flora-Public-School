@@ -88,6 +88,17 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
         <div className="space-y-2">
           <label className="block text-sm font-bold text-slate-700 mb-1">Choose Image File</label>
           <div className="relative border-2 border-dashed border-slate-200 rounded-3xl p-4 transition-all hover:border-pink-300 group bg-slate-50 overflow-hidden min-h-[160px] flex flex-col items-center justify-center">
+            {/* The input must ALWAYS be in the DOM to be submitted, regardless of preview state */}
+            <input 
+              type="file" 
+              id="imageFile"
+              name="imageFile" 
+              accept="image/*" 
+              required 
+              onChange={handleFileChange}
+              className="hidden" 
+            />
+            
             {preview ? (
               <div className="relative w-full h-full min-h-[140px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,23 +112,17 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
                 </button>
               </div>
             ) : (
-              <label className="cursor-pointer flex flex-col items-center justify-center space-y-2 py-4">
+              <label 
+                htmlFor="imageFile"
+                className="cursor-pointer flex flex-col items-center justify-center space-y-2 py-4"
+              >
                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-110 transition-transform">
                   <Upload className="w-6 h-6 text-pink-600" />
                 </div>
-                <div className="text-center">
+                <div className="text-center px-4">
                   <span className="text-sm font-bold text-pink-600">Click to upload</span>
                   <p className="text-xs text-slate-400 mt-1">PNG, JPG or WebP (Max 5MB)</p>
                 </div>
-                <input 
-                  type="file" 
-                  id="imageFile"
-                  name="imageFile" 
-                  accept="image/*" 
-                  required 
-                  onChange={handleFileChange}
-                  className="hidden" 
-                />
               </label>
             )}
           </div>
