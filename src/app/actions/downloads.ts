@@ -22,6 +22,8 @@ export async function createDownload(formData: FormData) {
     });
 
     revalidatePath('/admin/downloads');
+    revalidatePath('/');
+    revalidatePath('/downloads');
     return { success: true };
   } catch (error) {
     console.error('Failed to create download:', error);
@@ -36,6 +38,8 @@ export async function deleteDownload(id: string) {
     });
 
     revalidatePath('/admin/downloads');
+    revalidatePath('/');
+    revalidatePath('/downloads');
     return { success: true };
   } catch (error) {
     console.error('Failed to delete download:', error);

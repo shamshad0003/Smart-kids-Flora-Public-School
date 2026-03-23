@@ -24,6 +24,8 @@ export async function createAnnouncement(formData: FormData) {
     });
 
     revalidatePath('/admin/announcements');
+    revalidatePath('/');
+    revalidatePath('/announcements');
     return { success: true };
   } catch (error) {
     console.error('Failed to create announcement:', error);
@@ -38,6 +40,8 @@ export async function deleteAnnouncement(id: string) {
     });
 
     revalidatePath('/admin/announcements');
+    revalidatePath('/');
+    revalidatePath('/announcements');
     return { success: true };
   } catch (error) {
     console.error('Failed to delete announcement:', error);
