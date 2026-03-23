@@ -12,8 +12,10 @@ export async function createDownload(formData: FormData) {
     const category = formData.get('category') as string;
     const documentFile = formData.get('documentFile') as File;
 
-    if (!title || !category || !documentFile) {
-      return { error: 'Missing required fields' };
+    console.log('Download Upload Attempt:', { title, category, fileName: documentFile?.name, fileSize: documentFile?.size });
+
+    if (!title || !category || !documentFile || documentFile.size === 0) {
+      return { error: 'Missing required fields: please ensure title and file are provided' };
     }
 
     // Save file to public/uploads

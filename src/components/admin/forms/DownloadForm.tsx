@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, X, FileText, FileArchive, File as FileIcon } from 'lucide-react';
+import { Upload, X, FileIcon } from 'lucide-react';
 import { createDownload } from '@/app/actions/downloads';
 
 export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
@@ -14,6 +14,12 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
     if (file) {
       setFileName(file.name);
     }
+  }
+
+  function handleRemove() {
+    setFileName(null);
+    const fileInput = document.getElementById('documentFile') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   }
 
   async function handleSubmit(formData: FormData) {
@@ -31,7 +37,11 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+    <form 
+      action={handleSubmit} 
+      encType="multipart/form-data"
+      className="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+    >
       <h3 className="text-lg font-bold text-slate-900 mb-4 text-indigo-600">Upload New Resource</h3>
       
       {error && (
@@ -80,7 +90,7 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
                 <p className="text-xs font-bold text-slate-700 truncate max-w-[200px]">{fileName}</p>
                 <button 
                   type="button" 
-                  onClick={() => setFileName(null)}
+                  onClick={handleRemove}
                   className="mt-3 flex items-center space-x-1 text-xs text-red-500 font-bold hover:text-red-700 transition-colors"
                 >
                   <X className="w-3 h-3" />
@@ -98,6 +108,7 @@ export default function DownloadForm({ onSuccess }: { onSuccess: () => void }) {
                 </div>
                 <input 
                   type="file" 
+                  id="documentFile"
                   name="documentFile" 
                   required 
                   onChange={handleFileChange}

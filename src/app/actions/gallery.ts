@@ -12,8 +12,10 @@ export async function createGalleryItem(formData: FormData) {
     const category = formData.get('category') as string;
     const imageFile = formData.get('imageFile') as File;
 
-    if (!title || !category || !imageFile) {
-      return { error: 'Missing required fields' };
+    console.log('Gallery Upload Attempt:', { title, category, fileName: imageFile?.name, fileSize: imageFile?.size });
+
+    if (!title || !category || !imageFile || imageFile.size === 0) {
+      return { error: 'Missing required fields: please ensure title and image are provided' };
     }
 
     // Save file to public/uploads

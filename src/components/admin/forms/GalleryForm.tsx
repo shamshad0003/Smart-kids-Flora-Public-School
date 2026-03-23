@@ -20,6 +20,12 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
     }
   }
 
+  function handleRemove() {
+    setPreview(null);
+    const fileInput = document.getElementById('imageFile') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  }
+
   async function handleSubmit(formData: FormData) {
     setLoading(true);
     setError(null);
@@ -35,7 +41,11 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+    <form 
+      action={handleSubmit} 
+      encType="multipart/form-data"
+      className="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+    >
       <h3 className="text-lg font-bold text-slate-900 mb-4 text-pink-600">Add Gallery Image</h3>
       
       {error && (
@@ -84,7 +94,7 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
                 <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
                 <button 
                   type="button" 
-                  onClick={() => setPreview(null)}
+                  onClick={handleRemove}
                   className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors"
                 >
                   <X className="w-4 h-4" />
@@ -101,6 +111,7 @@ export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {
                 </div>
                 <input 
                   type="file" 
+                  id="imageFile"
                   name="imageFile" 
                   accept="image/*" 
                   required 
