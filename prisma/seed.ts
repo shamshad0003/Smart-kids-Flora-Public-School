@@ -14,7 +14,9 @@ async function main() {
     // ─── Admin User ─────────────────────────────────────────────
     await prisma.user.upsert({
         where: { email: "admin@florapublic.edu" },
-        update: {},
+        update: {
+            password: hashedAdmin, // Force update password if user exists
+        },
         create: {
             name: "School Admin",
             email: "admin@florapublic.edu",
@@ -26,7 +28,7 @@ async function main() {
     // ─── Teacher User ─────────────────────────────────────────────
     const teacherUser = await prisma.user.upsert({
         where: { email: "teacher@florapublic.edu" },
-        update: {},
+        update: { password: hashedTeacher }, // Reset password if exists
         create: {
             name: "Mr. Ahmed Raza",
             email: "teacher@florapublic.edu",
@@ -50,7 +52,7 @@ async function main() {
     // ─── Student User ─────────────────────────────────────────────
     const studentUser = await prisma.user.upsert({
         where: { email: "student@florapublic.edu" },
-        update: {},
+        update: { password: hashedStudent }, // Reset password if exists
         create: {
             name: "Ali Hassan",
             email: "student@florapublic.edu",
@@ -62,7 +64,7 @@ async function main() {
     // ─── Parent User ─────────────────────────────────────────────
     const parentUser = await prisma.user.upsert({
         where: { email: "parent@florapublic.edu" },
-        update: {},
+        update: { password: hashedParent }, // Reset password if exists
         create: {
             name: "Hassan Shah",
             email: "parent@florapublic.edu",

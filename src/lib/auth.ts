@@ -33,11 +33,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     throw new Error("Invalid credentials");
                 }
 
+                if (!user.isActive) {
+                    throw new Error("AccountBlocked");
+                }
+
                 return {
                     id: user.id,
                     name: user.name,
                     email: user.email,
                     role: user.role,
+                    mustChangePassword: user.mustChangePassword,
                 };
             }
         }),
@@ -50,16 +55,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         maxAge: 24 * 60 * 60, // 24 hours
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
-                token.role = (user as { role: string }).role;
+                token.role = user.role;
+                token.mustChangePassword = user.mustChangePassword;
+            }
+            // Handle session updates (e.g., after password change)
+            if (trigger === "update" && session) {
+                if (session.mustChangePassword !== undefined) {
+                    token.mustChangePassword = session.mustChangePassword;
+                }
             }
             return token;
         },
         async session({ session, token }) {
             if (session.user) {
-                (session.user as typeof session.user & { role: string }).role =
-                    token.role as string;
+                session.user.role = token.role as string;
+                session.user.mustChangePassword = token.mustChangePassword as boolean;
             }
             return session;
         },

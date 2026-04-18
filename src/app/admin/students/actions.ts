@@ -5,13 +5,14 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth-utils";
 import { z } from "zod";
+import { generateTempPassword } from "@/lib/user-utils";
 
 const StudentSchema = z.object({
     fullName: z.string().min(3, "Full name must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
     gradeLevel: z.string().min(1, "Grade level is required"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: z.string().optional(),
     parentId: z.string().optional(),
 });
 
@@ -33,7 +34,7 @@ export async function createStudent(formData: FormData) {
             email: formData.get("email"),
             phone: formData.get("phone"),
             gradeLevel: formData.get("gradeLevel"),
-            password: formData.get("password"),
+            password: formData.get("password") || undefined,
             parentId: formData.get("parentId"),
         });
 
@@ -41,14 +42,23 @@ export async function createStudent(formData: FormData) {
             return { error: validatedFields.error.flatten().fieldErrors };
         }
 
-        const { fullName, email, phone, gradeLevel, password, parentId } = validatedFields.data;
+        const { fullName, email, phone, gradeLevel, password: customPassword, parentId } = validatedFields.data;
 
         const existing = await prisma.user.findUnique({ where: { email } });
         if (existing) return { error: { email: ["Email already in use."] } };
 
-        const hashed = await bcrypt.hash(password, 12);
+        const tempPassword = customPassword || generateTempPassword();
+        const hashed = await bcrypt.hash(tempPassword, 12);
+
         const user = await prisma.user.create({
-            data: { name: fullName, email, password: hashed, role: "STUDENT" },
+            data: { 
+                name: fullName, 
+                email, 
+                password: hashed, 
+                role: "STUDENT",
+                mustChangePassword: true,
+                isActive: true
+            },
         });
 
         await prisma.student.create({
@@ -63,9 +73,28 @@ export async function createStudent(formData: FormData) {
         });
 
         revalidatePath("/admin/students");
-        return { success: true };
+        return { success: true, tempPassword: !customPassword ? tempPassword : null };
     } catch (error: any) {
         return { error: error.message || "An unexpected error occurred" };
+    }
+}
+
+// ─── Toggle Student Status ────────────────────────────────────
+export async function toggleStudentStatus(id: string, active: boolean) {
+    try {
+        await requireAdmin();
+        const student = await prisma.student.findUnique({ where: { id } });
+        if (!student) return { error: "Student not found" };
+
+        await prisma.user.update({
+            where: { id: student.userId },
+            data: { isActive: active }
+        });
+
+        revalidatePath("/admin/students");
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message || "Failed to update status" };
     }
 }
 
