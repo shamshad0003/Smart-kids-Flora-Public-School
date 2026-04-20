@@ -2,8 +2,10 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import { authConfig } from "./auth.config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
     providers: [
         CredentialsProvider({
             name: "Admin Login",
@@ -47,33 +49,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         }),
     ],
-    pages: {
-        signIn: "/login", // Redirect here when unauthenticated
-    },
-    session: {
-        strategy: "jwt",
-        maxAge: 24 * 60 * 60, // 24 hours
-    },
-    callbacks: {
-        async jwt({ token, user, trigger, session }) {
-            if (user) {
-                token.role = user.role;
-                token.mustChangePassword = user.mustChangePassword;
-            }
-            // Handle session updates (e.g., after password change)
-            if (trigger === "update" && session) {
-                if (session.mustChangePassword !== undefined) {
-                    token.mustChangePassword = session.mustChangePassword;
-                }
-            }
-            return token;
-        },
-        async session({ session, token }) {
-            if (session.user) {
-                session.user.role = token.role as string;
-                session.user.mustChangePassword = token.mustChangePassword as boolean;
-            }
-            return session;
-        },
-    },
 });
