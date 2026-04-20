@@ -8,14 +8,21 @@ import DeleteAssignmentButton from "./DeleteAssignmentButton";
 type Course = { id: string; name: string };
 type Assignment = { id: string; title: string; description: string | null; dueDate: Date; courseId: string; course: Course };
 
-export default function TeacherAssignmentsClient({ assignments, courses }: { assignments: any[]; courses: Course[] }) {
+export default function TeacherAssignmentsClient({ assignments, courses }: { assignments: Assignment[]; courses: Course[] }) {
     const [showForm, setShowForm] = useState(false);
     const [state, formAction, isPending] = useActionState(createAssignment, { success: false, message: "" });
     const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
-        if (state?.success) { setShowForm(false); formRef.current?.reset(); }
-    }, [state?.success]);
+        if (state?.success && showForm) { 
+            // Wrap in setTimeout to avoid synchronous setState inside useEffect warning
+            const timer = setTimeout(() => {
+                setShowForm(false); 
+                formRef.current?.reset(); 
+            }, 0);
+            return () => clearTimeout(timer);
+        }
+    }, [state?.success, showForm]);
 
     return (
         <div className="space-y-6">

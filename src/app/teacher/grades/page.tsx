@@ -6,7 +6,7 @@ import GradesClient from "./GradesClient";
 export default async function TeacherGradesPage() {
     const session = await auth();
     const teacher = await prisma.teacher.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             courses: {
                 include: {

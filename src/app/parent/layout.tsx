@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 
 export default async function ParentLayout({ children }: { children: ReactNode }) {
     const session = await auth();
-    if (!session || (session.user as any)?.role !== "PARENT") {
+    if (!session || session.user.role !== "PARENT") {
         redirect("/login");
     }
     return (

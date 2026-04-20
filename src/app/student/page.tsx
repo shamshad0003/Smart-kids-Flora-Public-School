@@ -7,7 +7,7 @@ import Link from "next/link";
 export default async function StudentDashboard() {
     const session = await auth();
     const student = await prisma.student.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             attendances: { orderBy: { date: "desc" }, take: 20 },
             grades: { include: { course: true, assignment: true }, orderBy: { createdAt: "desc" }, take: 5 }

@@ -10,8 +10,9 @@ export async function updateAdmissionStatus(id: string, status: "PENDING" | "APP
         await prisma.admission.update({ where: { id }, data: { status } });
         revalidatePath("/admin/admissions");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -21,7 +22,8 @@ export async function updateAdmissionNotes(id: string, notes: string) {
         await prisma.admission.update({ where: { id }, data: { notes } });
         revalidatePath("/admin/admissions");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }

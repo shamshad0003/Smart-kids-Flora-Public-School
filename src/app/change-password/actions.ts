@@ -61,7 +61,7 @@ export async function updatePassword(formData: FormData) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Password Update Error:', error);
     return { error: "An unexpected error occurred while updating your password" };
   }

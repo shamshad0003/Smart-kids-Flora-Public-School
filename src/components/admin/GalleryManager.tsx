@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import GalleryForm from './forms/GalleryForm';
 import { deleteGalleryItem } from '@/app/actions/gallery';
-import Image from 'next/image';
 
 interface GalleryItem {
   id: string;

@@ -41,8 +41,15 @@ const GradeSchema = z.object({
     existingId: z.string().optional(),
 });
 
+type ActionState = {
+    success: boolean;
+    message: string;
+    errors?: Record<string, string[]>;
+};
+
+
 // ─── Assignments ───────────────────────────────────────────────────
-export async function createAssignment(prevState: any, formData: FormData) {
+export async function createAssignment(prevState: ActionState, formData: FormData): Promise<ActionState> {
     try {
         await requireTeacher();
         const teacher = await getTeacherProfile();
@@ -71,8 +78,9 @@ export async function createAssignment(prevState: any, formData: FormData) {
         });
         revalidatePath("/teacher/assignments");
         return { success: true, message: "Assignment created successfully." };
-    } catch (error: any) {
-        return { success: false, message: error.message || "Failed to create assignment." };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to create assignment.";
+        return { success: false, message };
     }
 }
 
@@ -82,13 +90,14 @@ export async function deleteAssignment(id: string) {
         await prisma.assignment.delete({ where: { id } });
         revalidatePath("/teacher/assignments");
         return { success: true };
-    } catch (error: any) {
-        return { success: false, error: error.message };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { success: false, message };
     }
 }
 
 // ─── Attendance ─────────────────────────────────────────────────────
-export async function markAttendance(prevState: any, formData: FormData) {
+export async function markAttendance(prevState: ActionState, formData: FormData): Promise<ActionState> {
     try {
         await requireTeacher();
 
@@ -125,13 +134,14 @@ export async function markAttendance(prevState: any, formData: FormData) {
         }
         revalidatePath("/teacher/attendance");
         return { success: true, message: "Attendance saved." };
-    } catch (error: any) {
-        return { success: false, message: error.message || "Failed to save attendance." };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to save attendance.";
+        return { success: false, message };
     }
 }
 
 // ─── Grades ─────────────────────────────────────────────────────────
-export async function saveGrade(prevState: any, formData: FormData) {
+export async function saveGrade(prevState: ActionState, formData: FormData): Promise<ActionState> {
     try {
         await requireTeacher();
 
@@ -168,8 +178,9 @@ export async function saveGrade(prevState: any, formData: FormData) {
         }
         revalidatePath("/teacher/grades");
         return { success: true, message: "Grade saved." };
-    } catch (error: any) {
-        return { success: false, message: error.message || "Failed to save grade." };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to save grade.";
+        return { success: false, message };
     }
 }
 
@@ -179,7 +190,8 @@ export async function deleteGrade(id: string) {
         await prisma.grade.delete({ where: { id } });
         revalidatePath("/teacher/grades");
         return { success: true };
-    } catch (error: any) {
-        return { success: false, error: error.message };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { success: false, message };
     }
 }

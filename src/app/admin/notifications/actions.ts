@@ -28,8 +28,9 @@ export async function createNotification(formData: FormData) {
         await prisma.notification.create({ data: validatedFields.data });
         revalidatePath("/admin/notifications");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -39,7 +40,8 @@ export async function deleteNotification(id: string) {
         await prisma.notification.delete({ where: { id } });
         revalidatePath("/admin/notifications");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }

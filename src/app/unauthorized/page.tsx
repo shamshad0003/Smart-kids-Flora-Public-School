@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, ArrowLeft, Home, LogIn } from "lucide-react";
+import { ShieldAlert, Home, LogIn } from "lucide-react";
 import Link from "next/link";
 
 export default function UnauthorizedPage() {

@@ -61,8 +61,9 @@ export async function createParent(formData: FormData) {
 
         revalidatePath("/admin/parents");
         return { success: true, tempPassword: !customPassword ? tempPassword : null };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -80,8 +81,9 @@ export async function toggleParentStatus(id: string, active: boolean) {
 
         revalidatePath("/admin/parents");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "Failed to update status" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to update status";
+        return { error: message };
     }
 }
 
@@ -113,8 +115,9 @@ export async function updateParent(formData: FormData) {
 
         revalidatePath("/admin/parents");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -127,7 +130,8 @@ export async function deleteParent(id: string) {
         await prisma.user.delete({ where: { id: parent.userId } });
         revalidatePath("/admin/parents");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }

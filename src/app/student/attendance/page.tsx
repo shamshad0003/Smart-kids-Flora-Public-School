@@ -13,7 +13,7 @@ const statusConfig = {
 export default async function StudentAttendancePage() {
     const session = await auth();
     const student = await prisma.student.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             attendances: {
                 include: { course: true },

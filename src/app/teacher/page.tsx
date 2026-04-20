@@ -7,7 +7,7 @@ import SafeDate from "@/components/ui/SafeDate";
 
 export default async function TeacherDashboard() {
     const session = await auth();
-    const userEmail = session?.user?.email!;
+    const userEmail = session?.user?.email ?? "";
 
     const teacher = await prisma.teacher.findUnique({
         where: { email: userEmail },

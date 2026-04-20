@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, X, ImageIcon } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { createGalleryItem } from '@/app/actions/gallery';
 
 export default function GalleryForm({ onSuccess }: { onSuccess: () => void }) {

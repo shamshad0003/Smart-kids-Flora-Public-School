@@ -14,7 +14,7 @@ const statusConfig = {
 export default async function ParentAttendancePage() {
     const session = await auth();
     const parent = await prisma.parent.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             children: {
                 include: {
@@ -38,7 +38,7 @@ export default async function ParentAttendancePage() {
         <div className="space-y-6">
             <div>
                 <h1 className="text-2xl font-extrabold text-slate-900">Attendance</h1>
-                <p className="text-slate-500 text-sm mt-1">{child?.fullName}'s attendance records.</p>
+                <p className="text-slate-500 text-sm mt-1">{child?.fullName}&apos;s attendance records.</p>
             </div>
 
             <div className="grid grid-cols-3 gap-4">

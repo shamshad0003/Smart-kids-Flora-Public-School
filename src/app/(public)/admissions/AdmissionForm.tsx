@@ -22,7 +22,7 @@ export default function AdmissionForm() {
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-12">
             <div className="mb-8">
                 <h3 className="text-3xl font-extrabold text-slate-900 mb-2">Apply <span className="text-primary">Online</span></h3>
-                <p className="text-slate-500">Fill out the form below to start the admission process. Our admissions office will get back to you shortly.</p>
+                <p className="text-slate-500 text-sm mt-1">Fill out the form below to start the admission process. Our admissions office will get back to you shortly.</p>
             </div>
 
             {state?.success && (
@@ -46,7 +46,7 @@ export default function AdmissionForm() {
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* Student Name */}
                     <div className="space-y-2">
-                        <label htmlFor="studentName" className="text-sm font-bold text-slate-700">Student's Full Name *</label>
+                        <label htmlFor="studentName" className="text-sm font-bold text-slate-700">Student&apos;s Full Name *</label>
                         <input
                             type="text"
                             id="studentName"

@@ -1,16 +1,18 @@
 "use client";
 import { useState, useTransition } from "react";
 import { createTeacher, updateTeacher, deleteTeacher, toggleTeacherStatus } from "@/app/admin/teachers/actions";
-import { Plus, Pencil, Trash2, Loader2, X, BookOpen, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2 } from "lucide-react";
+import { resetUserPassword } from "@/app/actions/user";
+import { Plus, Pencil, Trash2, Loader2, X, BookOpen, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2, KeyRound } from "lucide-react";
 
 type Teacher = {
     id: string; 
+    userId: string; // Added userId
     fullName: string; 
     email: string; 
     phone: string | null; 
     subject: string; 
     createdAt: Date;
-    isActive?: boolean; // Added for status
+    isActive?: boolean;
 };
 
 export default function TeacherManager({ teachers }: { teachers: Teacher[] }) {
@@ -59,6 +61,18 @@ export default function TeacherManager({ teachers }: { teachers: Teacher[] }) {
     const handleToggleStatus = (id: string, currentStatus: boolean) => {
         startTransition(async () => {
             await toggleTeacherStatus(id, !currentStatus);
+        });
+    };
+
+    const handleResetPassword = (userId: string) => {
+        if (!confirm("Reset this user's password? This will generate a NEW temporary password and force them to change it on next login.")) return;
+        startTransition(async () => {
+            const res = await resetUserPassword(userId, "/admin/teachers");
+            if (res.error) setError(res.error);
+            else if (res.tempPassword) {
+                const teacher = teachers.find(t => t.userId === userId);
+                setNewAccountInfo({ email: teacher?.email || "User", tempPass: res.tempPassword });
+            }
         });
     };
 
@@ -250,6 +264,11 @@ export default function TeacherManager({ teachers }: { teachers: Teacher[] }) {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button onClick={() => handleResetPassword(t.userId)} disabled={isPending}
+                                                    title="Reset Password"
+                                                    className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
+                                                    <KeyRound className="h-4 w-4" />
+                                                </button>
                                                 <button onClick={() => { setEditing(t); setShowForm(false); setError(""); setNewAccountInfo(null); }}
                                                     className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
                                                     <Pencil className="h-4 w-4" />

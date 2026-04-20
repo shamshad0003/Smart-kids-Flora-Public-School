@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 export default auth((req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
-    const role = (req.auth?.user as any)?.role as string | undefined;
+    const user = req.auth?.user as { role?: string; mustChangePassword?: boolean } | null;
+    const role = user?.role;
 
     const isAdminRoute = nextUrl.pathname.startsWith("/admin");
     const isTeacherRoute = nextUrl.pathname.startsWith("/teacher");
@@ -13,8 +14,14 @@ export default auth((req) => {
     const isLoginPage = nextUrl.pathname === "/login";
 
     const isProtectedRoute = isAdminRoute || isTeacherRoute || isStudentRoute || isParentRoute;
+    const mustChangePassword = user?.mustChangePassword;
 
-    // Redirect logged-in users away from the login page to their dashboard
+    // 1. Force Password Change Redirection
+    if (isLoggedIn && mustChangePassword && nextUrl.pathname !== "/change-password" && !nextUrl.pathname.startsWith("/api")) {
+        return NextResponse.redirect(new URL("/change-password", nextUrl));
+    }
+
+    // 2. Redirect logged-in users away from the login page to their dashboard
     if (isLoggedIn && isLoginPage) {
         const dashboardMap: Record<string, string> = {
             ADMIN: "/admin",
@@ -26,14 +33,14 @@ export default auth((req) => {
         return NextResponse.redirect(new URL(redirect, nextUrl));
     }
 
-    // Redirect unauthenticated users
+    // 3. Redirect unauthenticated users
     if (!isLoggedIn && isProtectedRoute) {
         const loginUrl = new URL("/login", nextUrl);
         loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
         return NextResponse.redirect(loginUrl);
     }
 
-    // Role-based access control
+    // 4. Role-based access control
     if (isLoggedIn && isProtectedRoute) {
         const allowed =
             (isAdminRoute && role === "ADMIN") ||

@@ -7,7 +7,7 @@ import Link from "next/link";
 export default async function ParentDashboard() {
     const session = await auth();
     const parent = await prisma.parent.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             children: {
                 include: {

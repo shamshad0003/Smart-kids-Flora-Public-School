@@ -1,10 +1,12 @@
 "use client";
 import { useState, useTransition } from "react";
 import { createParent, updateParent, deleteParent, toggleParentStatus } from "@/app/admin/parents/actions";
-import { Plus, Pencil, Trash2, Loader2, X, Users, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2 } from "lucide-react";
+import { resetUserPassword } from "@/app/actions/user";
+import { Plus, Pencil, Trash2, Loader2, X, Users, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2, KeyRound } from "lucide-react";
 
 type Parent = { 
     id: string; 
+    userId: string;
     fullName: string; 
     email: string; 
     phone: string | null; 
@@ -57,6 +59,18 @@ export default function ParentManager({ parents }: { parents: Parent[] }) {
     const handleToggleStatus = (id: string, currentStatus: boolean) => {
         startTransition(async () => {
             await toggleParentStatus(id, !currentStatus);
+        });
+    };
+
+    const handleResetPassword = (userId: string) => {
+        if (!confirm("Reset this parent's password? This will generate a NEW temporary password and force them to change it on next login.")) return;
+        startTransition(async () => {
+            const res = await resetUserPassword(userId, "/admin/parents");
+            if (res.error) setError(res.error);
+            else if (res.tempPassword) {
+                const parent = parents.find(p => p.userId === userId);
+                setNewAccountInfo({ email: parent?.email || "User", tempPass: res.tempPassword });
+            }
         });
     };
 
@@ -233,6 +247,11 @@ export default function ParentManager({ parents }: { parents: Parent[] }) {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                                                <button onClick={() => handleResetPassword(p.userId)} disabled={isPending}
+                                                    title="Reset Password"
+                                                    className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
+                                                    <KeyRound className="h-4 w-4" />
+                                                </button>
                                                 <button onClick={() => { setEditing(p); setShowForm(false); setError(""); setNewAccountInfo(null); }}
                                                     className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
                                                     <Pencil className="h-4 w-4" />

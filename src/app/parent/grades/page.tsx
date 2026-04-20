@@ -14,7 +14,7 @@ const gradeBadge: Record<string, string> = {
 export default async function ParentGradesPage() {
     const session = await auth();
     const parent = await prisma.parent.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             children: {
                 include: {
@@ -37,7 +37,7 @@ export default async function ParentGradesPage() {
         <div className="space-y-6">
             <div>
                 <h1 className="text-2xl font-extrabold text-slate-900">Grades</h1>
-                <p className="text-slate-500 text-sm mt-1">{child?.fullName}'s academic grades.</p>
+                <p className="text-slate-500 text-sm mt-1">{child?.fullName}&apos;s academic grades.</p>
             </div>
 
             {avgMarks !== "N/A" && (

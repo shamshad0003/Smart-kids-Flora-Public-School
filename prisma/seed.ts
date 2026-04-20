@@ -6,7 +6,17 @@ const prisma = new PrismaClient();
 async function main() {
     console.log("🌱 Seeding database...");
 
-    const hashedAdmin = await bcrypt.hash("Admin@123", 10);
+    // Determine Admin Password
+    const customAdminPass = process.env.SEED_ADMIN_PASSWORD;
+    const adminClearPassword = customAdminPass || Math.random().toString(36).slice(-10) + "!";
+    
+    if (!customAdminPass) {
+        console.log("\n⚠️  No SEED_ADMIN_PASSWORD found in .env");
+        console.log("🔑 GENERATED SECURE ADMIN PASSWORD: ", adminClearPassword);
+        console.log("👉 Please save this password safely. You will need it to log in for the first time.\n");
+    }
+
+    const hashedAdmin = await bcrypt.hash(adminClearPassword, 12);
     const hashedTeacher = await bcrypt.hash("Teacher@123", 10);
     const hashedStudent = await bcrypt.hash("Student@123", 10);
     const hashedParent = await bcrypt.hash("Parent@123", 10);

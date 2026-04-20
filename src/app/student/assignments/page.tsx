@@ -6,7 +6,7 @@ import SafeDate from "@/components/ui/SafeDate";
 
 export default async function StudentAssignmentsPage() {
     const session = await auth();
-    const student = await prisma.student.findUnique({ where: { email: session?.user?.email! } });
+    const student = await prisma.student.findUnique({ where: { email: session?.user?.email ?? "" } });
     if (!student) redirect("/login");
 
     const courses = await prisma.course.findMany({

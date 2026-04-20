@@ -1,10 +1,12 @@
 "use client";
 import { useState, useTransition } from "react";
 import { createStudent, updateStudent, deleteStudent, toggleStudentStatus } from "@/app/admin/students/actions";
-import { Plus, Pencil, Trash2, Loader2, X, GraduationCap, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2, Link as LinkIcon } from "lucide-react";
+import { resetUserPassword } from "@/app/actions/user";
+import { Plus, Pencil, Trash2, Loader2, X, GraduationCap, ShieldCheck, UserCheck, UserX, Copy, CheckCircle2, Link as LinkIcon, KeyRound } from "lucide-react";
 
 type Student = {
     id: string; 
+    userId: string;
     fullName: string; 
     email: string; 
     phone: string | null;
@@ -59,6 +61,18 @@ export default function StudentManager({ students, parents }: { students: Studen
     const handleToggleStatus = (id: string, currentStatus: boolean) => {
         startTransition(async () => {
             await toggleStudentStatus(id, !currentStatus);
+        });
+    };
+
+    const handleResetPassword = (userId: string) => {
+        if (!confirm("Reset this student's password? This will generate a NEW temporary password and force them to change it on next login.")) return;
+        startTransition(async () => {
+            const res = await resetUserPassword(userId, "/admin/students");
+            if (res.error) setError(res.error);
+            else if (res.tempPassword) {
+                const student = students.find(s => s.userId === userId);
+                setNewAccountInfo({ email: student?.email || "User", tempPass: res.tempPassword });
+            }
         });
     };
 
@@ -264,6 +278,11 @@ export default function StudentManager({ students, parents }: { students: Studen
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onClick={() => handleResetPassword(s.userId)} disabled={isPending}
+                                                        title="Reset Password"
+                                                        className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
+                                                        <KeyRound className="h-4 w-4" />
+                                                    </button>
                                                     <button onClick={() => { setEditing(s); setShowForm(false); setError(""); setNewAccountInfo(null); }}
                                                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
                                                         <Pencil className="h-4 w-4" />

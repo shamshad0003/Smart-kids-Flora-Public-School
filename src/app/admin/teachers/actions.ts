@@ -67,8 +67,9 @@ export async function createTeacher(formData: FormData) {
         
         // Return the temporary password so it can be shown to the admin ONCE
         return { success: true, tempPassword: !customPassword ? tempPassword : null };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -86,8 +87,9 @@ export async function toggleTeacherStatus(id: string, active: boolean) {
 
         revalidatePath("/admin/teachers");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "Failed to update status" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to update status";
+        return { error: message };
     }
 }
 
@@ -120,8 +122,9 @@ export async function updateTeacher(formData: FormData) {
 
         revalidatePath("/admin/teachers");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }
 
@@ -134,7 +137,8 @@ export async function deleteTeacher(id: string) {
         await prisma.user.delete({ where: { id: teacher.userId } });
         revalidatePath("/admin/teachers");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }

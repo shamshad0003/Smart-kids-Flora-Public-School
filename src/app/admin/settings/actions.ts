@@ -44,7 +44,8 @@ export async function updateSettings(formData: FormData) {
 
         revalidatePath("/admin/settings");
         return { success: true };
-    } catch (error: any) {
-        return { error: error.message || "An unexpected error occurred" };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        return { error: message };
     }
 }

@@ -6,7 +6,7 @@ import AttendanceClient from "./AttendanceClient";
 export default async function TeacherAttendancePage() {
     const session = await auth();
     const teacher = await prisma.teacher.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             courses: {
                 include: {

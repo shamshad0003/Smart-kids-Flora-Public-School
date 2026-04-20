@@ -27,7 +27,7 @@ export default function ChangePasswordPage() {
       await update({ mustChangePassword: false });
       
       // Redirect based on role
-      const role = (session?.user as any)?.role;
+      const role = session?.user?.role;
       if (role === 'ADMIN') router.push('/admin');
       else if (role === 'TEACHER') router.push('/teacher');
       else if (role === 'STUDENT') router.push('/student');

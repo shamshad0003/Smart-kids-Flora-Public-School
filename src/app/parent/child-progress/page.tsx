@@ -6,7 +6,7 @@ import { Users, BookOpen, Award, ClipboardList } from "lucide-react";
 export default async function ParentChildProgressPage() {
     const session = await auth();
     const parent = await prisma.parent.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             children: {
                 include: {
@@ -48,7 +48,7 @@ export default async function ParentChildProgressPage() {
         <div className="space-y-6">
             <div>
                 <h1 className="text-2xl font-extrabold text-slate-900">Child Progress</h1>
-                <p className="text-slate-500 text-sm mt-1">Overview of {child.fullName}'s academic progress.</p>
+                <p className="text-slate-500 text-sm mt-1">Overview of {child.fullName}&apos;s academic progress.</p>
             </div>
 
             {/* Overview cards */}

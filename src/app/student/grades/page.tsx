@@ -14,7 +14,7 @@ const gradeBadge: Record<string, string> = {
 export default async function StudentGradesPage() {
     const session = await auth();
     const student = await prisma.student.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             grades: {
                 include: { course: true, assignment: true },

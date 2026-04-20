@@ -6,7 +6,7 @@ import TeacherAssignmentsClient from "./AssignmentsClient";
 export default async function TeacherAssignmentsPage() {
     const session = await auth();
     const teacher = await prisma.teacher.findUnique({
-        where: { email: session?.user?.email! },
+        where: { email: session?.user?.email ?? "" },
         include: {
             courses: true,
             assignments: {

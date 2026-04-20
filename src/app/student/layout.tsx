@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 
 export default async function StudentLayout({ children }: { children: ReactNode }) {
     const session = await auth();
-    if (!session || (session.user as any)?.role !== "STUDENT") {
+    if (!session || session.user.role !== "STUDENT") {
         redirect("/login");
     }
     return (

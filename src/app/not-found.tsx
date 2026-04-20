@@ -21,7 +21,7 @@ export default function NotFound() {
                 
                 <p className="text-slate-600 mb-10 leading-relaxed">
                     The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. 
-                    Let's get you back on track.
+                    Let&apos;s get you back on track.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
