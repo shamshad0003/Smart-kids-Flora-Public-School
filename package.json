@@ -22,6 +22,7 @@
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^8.0.2",
+    "cloudinary": "^2.5.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.5.0",
