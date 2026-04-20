@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://smart-kids-flora.vercel.app"),
   title: {
     default: "Smart Kids Flora Public School | Excellence in Education",
     template: "%s | Smart Kids Flora Public School",
