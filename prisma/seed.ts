@@ -21,15 +21,28 @@ async function main() {
     const hashedStudent = await bcrypt.hash("Student@123", 10);
     const hashedParent = await bcrypt.hash("Parent@123", 10);
 
-    // ─── Admin User ─────────────────────────────────────────────
+    // ─── Admin Users ───────────────────────────────────────────
     await prisma.user.upsert({
         where: { email: "admin@florapublic.edu" },
         update: {
-            password: hashedAdmin, // Force update password if user exists
+            password: hashedAdmin,
         },
         create: {
             name: "School Admin",
             email: "admin@florapublic.edu",
+            password: hashedAdmin,
+            role: "ADMIN",
+        },
+    });
+
+    await prisma.user.upsert({
+        where: { email: "canadashamshad786@gmail.com" },
+        update: {
+            password: hashedAdmin,
+        },
+        create: {
+            name: "Shamshad Admin",
+            email: "canadashamshad786@gmail.com",
             password: hashedAdmin,
             role: "ADMIN",
         },

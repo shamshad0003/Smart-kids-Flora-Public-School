@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://smart-kids-flora.vercel.app"),
+  metadataBase: new URL("https://smart-kids-flora-public-school-9wws.vercel.app"),
   title: {
     default: "Smart Kids Flora Public School | Excellence in Education",
     template: "%s | Smart Kids Flora Public School",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://florapublic.edu",
+    url: "https://smart-kids-flora-public-school-9wws.vercel.app",
     siteName: "Smart Kids Flora Public School",
     title: "Smart Kids Flora Public School | Excellence in Education",
     description: "Empowering students through innovative learning and holistic development.",
