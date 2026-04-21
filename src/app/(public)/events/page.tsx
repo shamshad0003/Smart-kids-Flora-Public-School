@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import PageHeader from "@/components/layout/PageHeader";
 import { Calendar, MapPin, Clock, Tag, SearchX } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function EventsPage() {
     // Fetch upcoming events
     const events = await prisma.event.findMany({

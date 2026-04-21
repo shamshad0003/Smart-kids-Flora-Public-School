@@ -3,6 +3,8 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Bell, Calendar } from "lucide-react";
 
 // Server component
+export const dynamic = 'force-dynamic';
+
 export default async function AnnouncementsPage() {
     // Fetch all published announcements, newest first
     const announcements = await prisma.announcement.findMany({

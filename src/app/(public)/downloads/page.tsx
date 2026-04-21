@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import PageHeader from "@/components/layout/PageHeader";
 import { FileText, Download, FolderArchive } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DownloadsPage() {
     // Fetch all downloads
     const downloads = await prisma.downloadFile.findMany({

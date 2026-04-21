@@ -2,6 +2,8 @@ import PageHeader from "@/components/layout/PageHeader";
 import { prisma } from "@/lib/prisma";
 import GalleryClient from "./GalleryClient";
 
+export const dynamic = 'force-dynamic';
+
 export default async function GalleryPage() {
     // Fetch all gallery items
     const items = await prisma.galleryItem.findMany({

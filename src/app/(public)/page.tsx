@@ -4,6 +4,8 @@ import QuickLinks from "@/components/home/QuickLinks";
 import GalleryPreview from "@/components/home/GalleryPreview";
 import ContactPreview from "@/components/home/ContactPreview";
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <div className="space-y-0">
