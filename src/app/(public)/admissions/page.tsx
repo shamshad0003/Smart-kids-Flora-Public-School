@@ -21,12 +21,12 @@ const requirements = [
 ];
 
 const feeStructure = [
-    { label: "Registration Fee (one-time)", amount: "PKR 5,000" },
-    { label: "Admission Fee (one-time)", amount: "PKR 15,000" },
-    { label: "Monthly Tuition — Primary", amount: "PKR 8,000/month" },
-    { label: "Monthly Tuition — Middle", amount: "PKR 10,000/month" },
-    { label: "Monthly Tuition — Secondary", amount: "PKR 12,000/month" },
-    { label: "Annual Development Fee", amount: "PKR 20,000/year" },
+    { label: "Registration Fee (one-time)", amount: "Rs 1,000" },
+    { label: "Admission Fee (one-time)", amount: "Rs 1,000" },
+    { label: "Monthly Tuition — Primary", amount: "Rs 1,000/month" },
+    { label: "Monthly Tuition — Middle", amount: "Rs 1,500/month" },
+    { label: "Monthly Tuition — Secondary", amount: "Rs 2,000/month" },
+    { label: "Annual Development Fee", amount: "Rs 5,000/year" },
 ];
 
 export default function AdmissionsPage() {
