@@ -64,9 +64,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <OnboardingRedirect>
-            {children}
-          </OnboardingRedirect>
+          {children}
         </AuthProvider>
       </body>
     </html>

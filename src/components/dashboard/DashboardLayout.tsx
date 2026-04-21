@@ -9,6 +9,7 @@ import {
     Bell, Users, LogOut, Menu, X, GraduationCap,
     ChevronRight,
 } from "lucide-react";
+import OnboardingRedirect from "@/components/admin/OnboardingRedirect";
 
 type NavItem = { label: string; href: string; icon: React.ElementType };
 
@@ -154,7 +155,9 @@ export default function DashboardLayout({ children, role, userName }: DashboardL
 
                 {/* Page content */}
                 <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-                    {children}
+                    <OnboardingRedirect>
+                        {children}
+                    </OnboardingRedirect>
                 </main>
             </div>
 

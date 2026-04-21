@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/admin/Sidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
+import OnboardingRedirect from "@/components/admin/OnboardingRedirect";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,7 +44,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     onMobileMenuToggle={() => setMobileOpen(true)}
                 />
                 <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-                    {children}
+                    <OnboardingRedirect>
+                        {children}
+                    </OnboardingRedirect>
                 </main>
             </div>
         </div>
