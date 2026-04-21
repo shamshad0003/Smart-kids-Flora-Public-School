@@ -19,8 +19,8 @@ export default auth((req) => {
     const isProtectedRoute = isAdminRoute || isTeacherRoute || isStudentRoute || isParentRoute;
     const mustChangePassword = user?.mustChangePassword;
 
-    // 1. Force Password Change Redirection
-    if (isLoggedIn && mustChangePassword && nextUrl.pathname !== "/change-password" && !nextUrl.pathname.startsWith("/api")) {
+    // 1. Force Password Change Redirection (Only on protected dashboard routes)
+    if (isLoggedIn && mustChangePassword && isProtectedRoute && nextUrl.pathname !== "/change-password" && !nextUrl.pathname.startsWith("/api")) {
         return NextResponse.redirect(new URL("/change-password", nextUrl));
     }
 
