@@ -76,6 +76,16 @@ export default function Navbar() {
             >
               Enroll Now
             </Link>
+            <Link 
+              href="/login" 
+              className={`px-5 py-2 rounded-full text-sm font-bold border-2 transition-all ${
+                scrolled 
+                  ? 'border-primary text-primary hover:bg-primary hover:text-white' 
+                  : 'border-white text-white hover:bg-white hover:text-primary'
+              }`}
+            >
+              Portal Login
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -123,6 +133,13 @@ export default function Navbar() {
                   className="block w-full text-center px-4 py-3 rounded-lg bg-primary text-white font-bold"
                 >
                   Enroll Now
+                </Link>
+                <Link 
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center px-4 py-3 rounded-lg border-2 border-primary text-primary font-bold mt-2"
+                >
+                  Portal Login
                 </Link>
               </div>
             </div>
