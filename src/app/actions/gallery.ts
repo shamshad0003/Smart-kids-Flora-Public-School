@@ -34,23 +34,34 @@ export async function createGalleryItem(formData: FormData) {
       });
 
     if (uploadError) {
-      console.error('Supabase upload error:', uploadError);
-      return { error: `Storage upload failed: ${uploadError.message}. Make sure the 'gallery' bucket exists in Supabase.` };
+      console.error('Supabase storage upload error details:', {
+        message: uploadError.message,
+        name: uploadError.name,
+        status: (uploadError as any).status
+      });
+      return { error: `Storage upload failed: ${uploadError.message}. Please check your Supabase bucket policies.` };
     }
 
     // 2. Get Public URL
     const { data: { publicUrl } } = supabase.storage
       .from('gallery')
       .getPublicUrl(storagePath);
+      
+    console.log('Generated Public URL:', publicUrl);
 
     // 3. Create database entry
-    await prisma.galleryItem.create({
-      data: {
-        title,
-        category,
-        imageUrl: publicUrl,
-      },
-    });
+    try {
+      await prisma.galleryItem.create({
+        data: {
+          title,
+          category,
+          imageUrl: publicUrl,
+        },
+      });
+    } catch (dbError) {
+      console.error('Database save error for gallery item:', dbError);
+      return { error: 'Image uploaded to cloud but failed to save in database.' };
+    }
 
     revalidatePath('/admin/gallery');
     revalidatePath('/');
