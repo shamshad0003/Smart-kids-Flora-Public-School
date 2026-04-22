@@ -6,16 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
     console.log("🌱 Seeding database...");
 
-    // Determine Admin Password
-    const customAdminPass = process.env.SEED_ADMIN_PASSWORD;
-    const adminClearPassword = customAdminPass || Math.random().toString(36).slice(-10) + "!";
-    
-    if (!customAdminPass) {
-        console.log("\n⚠️  No SEED_ADMIN_PASSWORD found in .env");
-        console.log("🔑 GENERATED SECURE ADMIN PASSWORD: ", adminClearPassword);
-        console.log("👉 Please save this password safely. You will need it to log in for the first time.\n");
-    }
-
+    const adminClearPassword = "SmartKids@2026";
     const hashedAdmin = await bcrypt.hash(adminClearPassword, 12);
     const hashedTeacher = await bcrypt.hash("Teacher@123", 10);
     const hashedStudent = await bcrypt.hash("Student@123", 10);
@@ -339,10 +330,11 @@ async function main() {
 
     console.log("✅ Seed complete!");
     console.log("\n📋 Demo Credentials:");
-    console.log("  Admin:   admin@florapublic.edu   / Admin@123");
-    console.log("  Teacher: teacher@florapublic.edu / Teacher@123");
-    console.log("  Student: student@florapublic.edu / Student@123");
-    console.log("  Parent:  parent@florapublic.edu  / Parent@123");
+    console.log("  Admin (1): canadashamshad786@gmail.com / SmartKids@2026");
+    console.log("  Admin (2): admin@florapublic.edu       / SmartKids@2026");
+    console.log("  Teacher:   teacher@florapublic.edu     / Teacher@123");
+    console.log("  Student:   student@florapublic.edu     / Student@123");
+    console.log("  Parent:    parent@florapublic.edu      / Parent@123");
 }
 
 main()

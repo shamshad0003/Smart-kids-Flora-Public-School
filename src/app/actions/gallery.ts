@@ -1,8 +1,8 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
-import fs from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,23 +18,37 @@ export async function createGalleryItem(formData: FormData) {
       return { error: 'Missing required fields: please ensure title and image are provided' };
     }
 
-    // Save file to public/uploads
+    // 1. Upload to Supabase Storage
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    
     const extension = path.extname(imageFile.name) || '.jpg';
     const filename = `${uuidv4()}${extension}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    const filepath = path.join(uploadDir, filename);
+    const storagePath = `gallery/${filename}`;
 
-    await fs.writeFile(filepath, buffer);
-    const imageUrl = `/uploads/${filename}`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('gallery')
+      .upload(storagePath, buffer, {
+        contentType: imageFile.type,
+        cacheControl: '3600',
+        upsert: false
+      });
 
+    if (uploadError) {
+      console.error('Supabase upload error:', uploadError);
+      return { error: `Storage upload failed: ${uploadError.message}. Make sure the 'gallery' bucket exists in Supabase.` };
+    }
+
+    // 2. Get Public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('gallery')
+      .getPublicUrl(storagePath);
+
+    // 3. Create database entry
     await prisma.galleryItem.create({
       data: {
         title,
         category,
-        imageUrl,
+        imageUrl: publicUrl,
       },
     });
 
@@ -50,7 +64,17 @@ export async function createGalleryItem(formData: FormData) {
 
 export async function deleteGalleryItem(id: string) {
   try {
-    // Optionally delete the physical file here if needed
+    const item = await prisma.galleryItem.findUnique({ where: { id } });
+    if (item) {
+      // Extract filename from Supabase URL (e.g., .../gallery/filename.jpg)
+      const urlParts = item.imageUrl.split('/');
+      const filename = urlParts[urlParts.length - 1];
+      
+      await supabase.storage
+        .from('gallery')
+        .remove([`gallery/${filename}`]);
+    }
+
     await prisma.galleryItem.delete({
       where: { id },
     });
