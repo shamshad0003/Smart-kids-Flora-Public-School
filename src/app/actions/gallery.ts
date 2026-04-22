@@ -3,8 +3,6 @@
 import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function createGalleryItem(formData: FormData) {
   try {
@@ -16,16 +14,22 @@ export async function createGalleryItem(formData: FormData) {
       return { error: 'No image file provided' };
     }
 
-    // 1. Upload to Supabase Storage
+// 1. Upload to Supabase Storage
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Create a unique filename
-    const fileExt = path.extname(imageFile.name) || '.jpg';
-    const fileName = `${uuidv4()}${fileExt}`;
+    // Simpler naming to avoid 'path' and 'uuid' dependencies
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const fileExt = imageFile.name.split('.').pop() || 'jpg';
+    const fileName = `${timestamp}-${randomStr}.${fileExt}`;
     const storagePath = `${category.toLowerCase()}/${fileName}`;
 
     console.log('Attempting Supabase upload to path:', storagePath);
+    
+    if (!supabase) {
+      return { error: 'Cloud storage client not initialized. Check your Supabase keys in Vercel.' };
+    }
 
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('gallery')
@@ -36,12 +40,8 @@ export async function createGalleryItem(formData: FormData) {
       });
 
     if (uploadError) {
-      console.error('Supabase storage upload error details:', {
-        message: uploadError.message,
-        name: uploadError.name,
-        status: (uploadError as any).status
-      });
-      return { error: `Storage upload failed: ${uploadError.message}. Please check your Supabase bucket policies.` };
+      console.error('Supabase storage upload error details:', uploadError);
+      return { error: `Storage upload failed: ${uploadError.message}. Check your Supabase bucket policies.` };
     }
 
     // 2. Get Public URL
@@ -49,9 +49,11 @@ export async function createGalleryItem(formData: FormData) {
       .from('gallery')
       .getPublicUrl(storagePath);
       
-    console.log('Generated Public URL:', publicUrl);
-
     // 3. Create database entry
+    if (!prisma) {
+      return { error: 'Database client not initialized. Check your DATABASE_URL in Vercel.' };
+    }
+
     try {
       await prisma.galleryItem.create({
         data: {
@@ -60,9 +62,9 @@ export async function createGalleryItem(formData: FormData) {
           imageUrl: publicUrl,
         },
       });
-    } catch (dbError) {
-      console.error('Database save error for gallery item:', dbError);
-      return { error: 'Image uploaded to cloud but failed to save in database. Check your DATABASE_URL in Vercel.' };
+    } catch (dbError: any) {
+      console.error('Database save error:', dbError);
+      return { error: `Image uploaded but database failed: ${dbError.message || 'Check DATABASE_URL'}` };
     }
 
     revalidatePath('/admin/gallery');
