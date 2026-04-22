@@ -66,7 +66,6 @@ export async function createGalleryItem(formData: FormData) {
     }
 
     revalidatePath('/admin/gallery');
-    revalidatePath('/');
     revalidatePath('/gallery');
 
     return { success: true };
@@ -80,13 +79,15 @@ export async function deleteGalleryItem(id: string) {
   try {
     const item = await prisma.galleryItem.findUnique({ where: { id } });
     if (item) {
-      // Extract filename from Supabase URL (e.g., .../gallery/filename.jpg)
+      // Extract filename and category from Supabase URL
+      // URL format: .../storage/v1/object/public/gallery/category/filename.jpg
       const urlParts = item.imageUrl.split('/');
       const filename = urlParts[urlParts.length - 1];
+      const category = urlParts[urlParts.length - 2];
       
       await supabase.storage
         .from('gallery')
-        .remove([`gallery/${filename}`]);
+        .remove([`${category}/${filename}`]);
     }
 
     await prisma.galleryItem.delete({
@@ -94,7 +95,6 @@ export async function deleteGalleryItem(id: string) {
     });
 
     revalidatePath('/admin/gallery');
-    revalidatePath('/');
     revalidatePath('/gallery');
     return { success: true };
   } catch (error) {
