@@ -12,18 +12,20 @@ export async function createGalleryItem(formData: FormData) {
     const category = formData.get('category') as string;
     const imageFile = formData.get('imageFile') as File;
 
-    console.log('Gallery Upload Attempt:', { title, category, fileName: imageFile?.name, fileSize: imageFile?.size });
-
-    if (!title || !category || !imageFile || imageFile.size === 0) {
-      return { error: 'Missing required fields: please ensure title and image are provided' };
+    if (!imageFile || imageFile.size === 0) {
+      return { error: 'No image file provided' };
     }
 
     // 1. Upload to Supabase Storage
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const extension = path.extname(imageFile.name) || '.jpg';
-    const filename = `${uuidv4()}${extension}`;
-    const storagePath = `gallery/${filename}`;
+    
+    // Create a unique filename
+    const fileExt = path.extname(imageFile.name) || '.jpg';
+    const fileName = `${uuidv4()}${fileExt}`;
+    const storagePath = `${category.toLowerCase()}/${fileName}`;
+
+    console.log('Attempting Supabase upload to path:', storagePath);
 
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('gallery')
@@ -60,16 +62,17 @@ export async function createGalleryItem(formData: FormData) {
       });
     } catch (dbError) {
       console.error('Database save error for gallery item:', dbError);
-      return { error: 'Image uploaded to cloud but failed to save in database.' };
+      return { error: 'Image uploaded to cloud but failed to save in database. Check your DATABASE_URL in Vercel.' };
     }
 
     revalidatePath('/admin/gallery');
     revalidatePath('/');
     revalidatePath('/gallery');
+
     return { success: true };
-  } catch (error) {
-    console.error('Failed to add gallery image:', error);
-    return { error: 'Failed to add image to gallery' };
+  } catch (fatalError: any) {
+    console.error('FATAL ERROR in createGalleryItem:', fatalError);
+    return { error: `A critical error occurred: ${fatalError.message || 'Unknown error'}. This usually means a connection issue.` };
   }
 }
 
