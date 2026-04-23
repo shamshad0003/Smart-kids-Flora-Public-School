@@ -1,13 +1,14 @@
 import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import GalleryManager from '@/components/admin/GalleryManager';
+import { GalleryItem } from '@prisma/client';
 
 export const metadata: Metadata = {
   title: 'Manage Gallery | Admin Portal',
 };
 
 export default async function GalleryPage() {
-  let images = [];
+  let images: GalleryItem[] = [];
   let connectionError = false;
 
   try {
